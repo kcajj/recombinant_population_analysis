@@ -13,11 +13,11 @@ def viterbi(y, A, B, pi):
     """
     N = B.shape[0]
     x_seq = np.zeros([N, 0])
-    V = B[:, y[0]] * pi
-
+    V = np.log(B[:, y[0]]) + np.log(pi)
+    
     # forward to compute the optimal value function V
     for y_ in y[1:]:
-        _V = np.tile(B[:, y_], reps=[N, 1]).T * A.T * np.tile(V, reps=[N, 1])
+        _V = np.log(np.tile(B[:, y_], reps=[N, 1]).T) + np.log(A.T) + np.tile(V, reps=[N, 1])
         x_ind = np.argmax(_V, axis=1)
         x_seq = np.hstack([x_seq, np.c_[x_ind]])
         V = _V[np.arange(N), x_ind]
@@ -34,11 +34,11 @@ def viterbi(y, A, B, pi):
     
 initial_p={"A":0.5,"B":0.5}
 
-transition_p_froma={"A":0.99,"B":0.01}
-transition_p_fromb={"A":0.01,"B":0.99}
+transition_p_froma={"A":0.999,"B":0.001}
+transition_p_fromb={"A":0.001,"B":0.999}
 
-emission_p_froma={".":0.599,"a":0.40,"b":0.001}
-emission_p_fromb={".":0.599,"a":0.001,"b":0.40}
+emission_p_froma={".":0.949,"a":0.05,"b":0.001}
+emission_p_fromb={".":0.949,"a":0.001,"b":0.05}
 
 ip_np=np.array(list(initial_p.values()))
 tp_np=np.array([list(transition_p_froma.values()),
@@ -62,13 +62,19 @@ if __name__ == "__main__":
             file=f'results/msa/clones/{population}_{clone}_msa.fasta'
             out_folder=f'results/plots/recombination_evidences/clones/{population}_{clone}_msa.png'
 
-            k=1000 #convolution window
-
             msa_matrix=read_msa(file)
 
             e_distribution = get_evidences_distributions(msa_matrix)
             
             o = viterbi(e_distribution, tp_np, ep_np, ip_np)
 
-            print(o)
+            plt.subplot(2, 1, 1)
+            plt.plot(e_distribution)
+            plt.title('e_distribution')
 
+            plt.subplot(2, 1, 2)
+            plt.plot(o)
+            plt.title('o')
+
+            plt.tight_layout()
+            plt.show()
