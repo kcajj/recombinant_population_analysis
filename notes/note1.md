@@ -91,7 +91,7 @@ the prediction is 100% correct. I will run the script multiple times with random
 
 the accuracy is always around 99%. for now we are happy with this result.
 
-## Extract the array of recombination evidences from Aionostat data
+## make predictions on Aionostat data
 
 ### phage isolates sequences
 
