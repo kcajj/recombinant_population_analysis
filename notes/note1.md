@@ -90,3 +90,13 @@ this is the predicted array of hidden states:
 the prediction is 100% correct. I will run the script multiple times with random sequences
 
 the accuracy is always around 99%. for now we are happy with this result.
+
+## Extract the array of recombination evidences from Aionostat data
+
+### phage isolates sequences
+
+The recombination evidences are extracted from the msa of the two reference sequences and the assembly of the phage clone. This is done through the handle_msa.py script.
+
+In hmm.py it is defined the Viterbi algorithm and the probability matrices. We take the recombination evidences of the clones and we give them in input to the Viterbi algorithm.
+
+### reads of phage population
