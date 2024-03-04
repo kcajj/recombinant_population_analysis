@@ -34,11 +34,11 @@ def viterbi(y, A, B, pi):
     
 initial_p={"A":0.5,"B":0.5}
 
-transition_p_froma={"A":0.999,"B":0.001}
-transition_p_fromb={"A":0.001,"B":0.999}
+transition_p_froma={"A":0.9999,"B":0.0001}
+transition_p_fromb={"A":0.0001,"B":0.9999}
 
-emission_p_froma={".":0.949,"a":0.05,"b":0.001}
-emission_p_fromb={".":0.949,"a":0.001,"b":0.05}
+emission_p_froma={".":0.60,"a":0.30,"b":0.10}
+emission_p_fromb={".":0.60,"a":0.10,"b":0.30}
 
 ip_np=np.array(list(initial_p.values()))
 tp_np=np.array([list(transition_p_froma.values()),
@@ -53,28 +53,30 @@ takes a MSA, extracts the evidences (handle msa) and gives them in input to vite
 if __name__ == "__main__":
 
     populations=['P2','P3']
-    clones=['C1','C2','C3','C4']
-    references=['EM11','EM60']
+    timesteps=['1','3','5','7']
+    reads=['1','14','15','16','17','18','19']
 
     for population in populations:
-        for clone in clones:
+        for timestep in timesteps:
+            for read in reads:
+                file=f'/home/jack/code/recombinant_population_analysis/results/msa/P2/7/P2_7_{read}_msa.fasta'
+                out_folder=f'results/plots/recombination_evidences/reads/{population}_{timestep}_msa.png'
 
-            file=f'results/msa/clones/{population}_{clone}_msa.fasta'
-            out_folder=f'results/plots/recombination_evidences/clones/{population}_{clone}_msa.png'
+                msa_matrix=read_msa(file)
 
-            msa_matrix=read_msa(file)
+                e_distribution = get_evidences_distributions(msa_matrix)
+                
+                print(e_distribution)
 
-            e_distribution = get_evidences_distributions(msa_matrix)
-            
-            o = viterbi(e_distribution, tp_np, ep_np, ip_np)
+                o = viterbi(e_distribution, tp_np, ep_np, ip_np)
 
-            plt.subplot(2, 1, 1)
-            plt.plot(e_distribution)
-            plt.title('e_distribution')
+                plt.subplot(2, 1, 1)
+                plt.plot(e_distribution)
+                plt.title('e_distribution')
 
-            plt.subplot(2, 1, 2)
-            plt.plot(o)
-            plt.title('o')
+                plt.subplot(2, 1, 2)
+                plt.plot(o)
+                plt.title('o')
 
-            plt.tight_layout()
-            plt.show()
+                plt.tight_layout()
+                plt.show()
