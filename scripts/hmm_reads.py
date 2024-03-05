@@ -34,8 +34,8 @@ def viterbi(y, A, B, pi):
     
 initial_p={"A":0.5,"B":0.5}
 
-transition_p_froma={"A":0.9999,"B":0.0001}
-transition_p_fromb={"A":0.0001,"B":0.9999}
+transition_p_froma={"A":0.999,"B":0.001}
+transition_p_fromb={"A":0.001,"B":0.999}
 
 emission_p_froma={".":0.60,"a":0.30,"b":0.10}
 emission_p_fromb={".":0.60,"a":0.10,"b":0.30}
@@ -54,17 +54,17 @@ if __name__ == "__main__":
 
     populations=['P2','P3']
     timesteps=['1','3','5','7']
-    reads=['1','14','15','16','17','18','19']
-
+    reads=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19']
+    
     for population in populations:
         for timestep in timesteps:
             for read in reads:
                 file=f'results/msa/P2/7/P2_7_{read}_msa.fasta'
-                out_folder=f'results/plots/recombination_evidences/reads/{population}_{timestep}_msa.png'
+                out_folder=f'results/plots/reads/{population}_{timestep}_{read}_msa.png'
 
                 msa_matrix=read_msa(file)
 
-                e_distribution = get_evidences_distributions(msa_matrix)
+                e_distribution = get_evidences_distributions(msa_matrix,i_ref1=0,i_ref2=1,i_extra=2)
                 
                 print(e_distribution)
 
@@ -72,11 +72,13 @@ if __name__ == "__main__":
 
                 plt.subplot(2, 1, 1)
                 plt.scatter(range(len(e_distribution)), e_distribution, c=e_distribution, marker='|', alpha=0.5)
-                plt.title('e_distribution')
+                plt.title('evidence distribution (purple no evidence, green evidence for A, yellow evidence for B)')
 
                 plt.subplot(2, 1, 2)
                 plt.plot(hmm_prediction)
-                plt.title('hmm_prediction')
+                plt.title(f'hmm prediction read {read}, {population}, t{timestep} (0:A, 1:B)')
 
                 plt.tight_layout()
-                plt.show()
+                plt.savefig(out_folder)
+                #plt.show()
+                plt.close()
