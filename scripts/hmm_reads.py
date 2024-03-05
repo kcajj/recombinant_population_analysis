@@ -59,7 +59,7 @@ if __name__ == "__main__":
     for population in populations:
         for timestep in timesteps:
             for read in reads:
-                file=f'/home/jack/code/recombinant_population_analysis/results/msa/P2/7/P2_7_{read}_msa.fasta'
+                file=f'results/msa/P2/7/P2_7_{read}_msa.fasta'
                 out_folder=f'results/plots/recombination_evidences/reads/{population}_{timestep}_msa.png'
 
                 msa_matrix=read_msa(file)
@@ -68,15 +68,15 @@ if __name__ == "__main__":
                 
                 print(e_distribution)
 
-                o = viterbi(e_distribution, tp_np, ep_np, ip_np)
+                hmm_prediction = viterbi(e_distribution, tp_np, ep_np, ip_np)
 
                 plt.subplot(2, 1, 1)
-                plt.plot(e_distribution)
+                plt.scatter(range(len(e_distribution)), e_distribution, c=e_distribution, marker='|', alpha=0.5)
                 plt.title('e_distribution')
 
                 plt.subplot(2, 1, 2)
-                plt.plot(o)
-                plt.title('o')
+                plt.plot(hmm_prediction)
+                plt.title('hmm_prediction')
 
                 plt.tight_layout()
                 plt.show()
