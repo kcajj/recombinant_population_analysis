@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
             msa_matrix=read_msa(file)
 
-            e_distribution = get_evidences_distributions(msa_matrix)
+            e_distribution = get_evidences_distributions(msa_matrix,i_ref1=1,i_ref2=2,i_extra=0)
             
             hmm_prediction = viterbi(e_distribution, tp_np, ep_np, ip_np)
 

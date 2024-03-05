@@ -12,20 +12,20 @@ def read_msa(path):
             msa_matrix[i][pos]=nuc
     return msa_matrix
 
-def get_evidences_distributions(msa_matrix):
+def get_evidences_distributions(msa_matrix,i_ref1,i_ref2,i_extra):
     l=len(msa_matrix[0])
     e_distribution = np.zeros(l, dtype=int)
 
     for pos,array in enumerate(msa_matrix[0]):
-        nuc_assembly=msa_matrix[0,pos]
-        nuc_first_ref=msa_matrix[1,pos]
-        nuc_second_ref=msa_matrix[2,pos]
-        if nuc_assembly!='-' and nuc_first_ref!='-' and nuc_second_ref!='-':
-            if (nuc_assembly!=nuc_first_ref and nuc_assembly!=nuc_second_ref) or (nuc_assembly==nuc_first_ref and nuc_assembly==nuc_second_ref):
+        nuc_extra=msa_matrix[i_extra,pos]
+        nuc_first_ref=msa_matrix[i_ref1,pos]
+        nuc_second_ref=msa_matrix[i_ref2,pos]
+        if nuc_extra!='-' and nuc_first_ref!='-' and nuc_second_ref!='-':
+            if (nuc_extra!=nuc_first_ref and nuc_extra!=nuc_second_ref) or (nuc_extra==nuc_first_ref and nuc_extra==nuc_second_ref):
                 continue
-            elif nuc_assembly==nuc_first_ref and nuc_assembly!=nuc_second_ref:
+            elif nuc_extra==nuc_first_ref and nuc_extra!=nuc_second_ref:
                 e_distribution[pos]=1
-            elif nuc_assembly!=nuc_first_ref and nuc_assembly==nuc_second_ref:
+            elif nuc_extra!=nuc_first_ref and nuc_extra==nuc_second_ref:
                 e_distribution[pos]=2
 
     return e_distribution

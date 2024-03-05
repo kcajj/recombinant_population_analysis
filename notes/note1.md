@@ -135,7 +135,13 @@ the same procedure is applied to the reads of the population. in this case the a
 
 i tried to tweak a bit the parameters but the resutls have many problems:
 
-at this point it would be nice to infer the correct parameters of the probability matrices to see if the situation can get better.
+![noisy_read_prediction](images/noisy_read_prediction.png)
+
+these problems were just due to a bug in the code, the actual situation is much nicer!!!
+
+![nice_read_evidences](images/nice_read_evidences.png)
+
+at this point it would be nice to infer the correct parameters of the probability matrices.
 
 #### parameters estimation
 
@@ -143,3 +149,4 @@ at this point it would be nice to infer the correct parameters of the probabilit
 
 to estimate the emission probabilities we can use reads of a sequencing run of a pure phage. by aligning these reads to the msa of references we can see with which frequency ., a and b evidences occur.
 
+this will require a looooooot of time. i think we have to find another solution.
