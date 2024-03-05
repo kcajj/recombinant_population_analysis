@@ -33,10 +33,10 @@ To test that it is working i have to define some reasonable probability matrices
 
 - emission probability matrix
 
-|    |a         |b        |.        |
-|----|----------|---------|---------|
-|A   |0.40      |0.01     |0.59     |
-|B   |0.01      |0.40     |0.59     |
+|    |.        |a        |b        |
+|----|---------|---------|---------|
+|A   |0.59     |0.40     |0.01     |
+|B   |0.59     |0.01     |0.40     |
 
 Now i will generate sequences with these probabilities
 
@@ -68,10 +68,10 @@ i think that to use the viterbi script i have to convert every title of the matr
 
 - emission probability matrix
 
-|    |0         |1        |2        |
-|----|----------|---------|---------|
-|0   |0.40      |0.01     |0.59     |
-|1   |0.01      |0.40     |0.59     |
+|    |0        |1        |2        |
+|----|---------|---------|---------|
+|0   |0.59     |0.40     |0.01     |
+|1   |0.59     |0.01     |0.40     |
 
 for this reason the previously produced sequence has to be translated to numbers
 
@@ -99,4 +99,47 @@ The recombination evidences are extracted from the msa of the two reference sequ
 
 In hmm.py it is defined the Viterbi algorithm and the probability matrices. We take the recombination evidences of the clones and we give them in input to the Viterbi algorithm.
 
+for the clones i used the following matrices:
+
+- initial probability matrix
+
+|    |      |
+|----|------|
+|0   |0.5   |
+|1   |0.5   |
+
+- transition probability matrix
+
+|    |0       |1       |
+|----|--------|--------|
+|0   |0.999   |0.001   |
+|1   |0.00    |0.999   |
+
+- emission probability matrix
+
+|    |0         |1        |2        |
+|----|----------|---------|---------|
+|0   |0.949     |0.05     |0.001    |
+|1   |0.949     |0.001    |0.05     |
+
+to obtain sensible results from i modified the viterbi algorithm to do additions between logarithms instead of multiplications between probabilities. this is because otherwise the probability would become too small.
+
+this is the result:
+![example_clone_prediction](../results/plots/clones/P2_C2_msa.png)
+
 ### reads of phage population
+
+the same procedure is applied to the reads of the population. in this case the array of evidences is much more noisy:
+
+![noisy_read_evidences](images/noisy_read_evidences.png)
+
+i tried to tweak a bit the parameters but the resutls have many problems:
+
+at this point it would be nice to infer the correct parameters of the probability matrices to see if the situation can get better.
+
+#### parameters estimation
+
+##### emission probabilities
+
+to estimate the emission probabilities we can use reads of a sequencing run of a pure phage. by aligning these reads to the msa of references we can see with which frequency ., a and b evidences occur.
+

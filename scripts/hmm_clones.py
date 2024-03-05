@@ -69,7 +69,7 @@ if __name__ == "__main__":
             hmm_prediction = viterbi(e_distribution, tp_np, ep_np, ip_np)
 
             plt.subplot(2, 1, 1)
-            plt.scatter(range(len(e_distribution)), e_distribution, c=e_distribution)
+            plt.scatter(range(len(e_distribution)), e_distribution, c=e_distribution, marker='|', alpha=0.5)
             plt.title('evidence distribution (purple no evidence, green evidence for A, yellow evidence for B)')
 
             plt.subplot(2, 1, 2)
