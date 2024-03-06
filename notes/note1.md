@@ -165,5 +165,12 @@ the problem could be:
 2. maybe the reads are reversed or complemented: I will explore the .sam mapping of the first reads of the .fastq file to see if there is a correlation between a bad msa and some characteristic of the mapping of the read on the reference genome.
 turns out this is true, i already dealt with this problem in rec_genome_analysis and i took the reverse complement of the reads that were mapped in the in the other direction with minimap2. maybe i can try to use some options of mafft before implementing all of this again.
 i will try to use the --adjustdirection option, let's hope it is enough.
+it doesn't work, i will try with --adjustdirectionaccurately. it works!!! still it's a bit slow. I will try to run 100 reads for each phage to have an idea of the time needed.
+these are the results:
+mean time spent
+EM11   7.477514550685883
+EM60   10.225129489898682
 
-also, right now the script takes the frequencies from the whole length of the genome. maybe we can limit somehow the region in which the read is mapping. (actually right now the script skips every type of gap so it doesn't consider the regions that are not mapped)
+we can see if by giving in input directly the complemented reads and not using adjustidrectionaccurately we obtain a better result in terms of time.
+
+also, right now the script takes the frequencies from the whole length of the genome. maybe we can limit somehow the region in which the read is mapping.
