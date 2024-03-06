@@ -147,6 +147,12 @@ at this point it would be nice to infer the correct parameters of the probabilit
 
 ##### emission probabilities
 
-to estimate the emission probabilities we can use reads of a sequencing run of a pure phage. by aligning these reads to the msa of references we can see with which frequency ., a and b evidences occur.
+to estimate the emission probabilities we can use reads of a sequencing run of a pure phage. by aligning these reads to the msa of references we can see with which frequency ., a and b evidences occur. we will just count the occurrence of each visible state.
+
+The creation of the msa between the two references and a read takes more or less 30 seconds.
 
 this will require a looooooot of time. i think we have to find another solution.
+
+1. we could run the same script in parallel for multiple reads.
+
+2. we could align multiple reads at the same time.
