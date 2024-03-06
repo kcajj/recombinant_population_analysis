@@ -156,3 +156,7 @@ this will require a looooooot of time. i think we have to find another solution.
 1. we could run the same script in parallel for multiple reads.
 
 2. we could align multiple reads at the same time.
+
+WAIT! the huge amount of time is taken only by the reads that map badly in the msa. i.e. reads that map for the whole length of the references instead of in a specific region. if we fix this problem probably also the msa production time will be reduced a lot.
+
+idk what could be the reason of this problem.

@@ -21,7 +21,11 @@ for phage in phages:
     temp_fasta_path = f"results/temp/{phage}_read.fasta"
     temp_output_path = f"results/temp/{phage}_read_msa.fasta"
 
-    c=0
+    null_prob=[]
+    a_prob=[]
+    b_prob=[]
+    
+    c = 0
     with gzip.open(f"data/{phage}_new_chemistry.fastq.gz", "rt") as handle:
         for record in SeqIO.parse(handle, "fastq"):
             
@@ -46,17 +50,10 @@ for phage in phages:
 
             e_distribution = get_evidences_distributions(msa_matrix,i_ref1=0,i_ref2=1,i_extra=2)
 
-            null_count = np.count_nonzero(e_distribution == 0)
-            a_count = np.count_nonzero(e_distribution == 1)
-            b_count = np.count_nonzero(e_distribution == 2)
-
-            null_prob = null_count / len(e_distribution)
-            a_prob = a_count / len(e_distribution)
-            b_prob = b_count / len(e_distribution)
-
-            print(f"Number of zeros: {null_count} (Probability: {null_prob})")
-            print(f"Number of ones: {a_count} (Probability: {a_prob})")
-            print(f"Number of twos: {b_count} (Probability: {b_prob})")
+            l = len(e_distribution)
+            null_prob.append(np.count_nonzero(e_distribution == 0)/l)
+            a_prob.append(np.count_nonzero(e_distribution == 1)/l)
+            b_prob.append(np.count_nonzero(e_distribution == 2)/l)
 
             plt.scatter(range(len(e_distribution)), e_distribution, c=e_distribution, marker='|', alpha=0.5)
             plt.title('evidence distribution (purple no evidence, green evidence for A, yellow evidence for B)')
@@ -67,5 +64,10 @@ for phage in phages:
             rm_command = f"rm {temp_fasta_path} {temp_output_path}"
             subprocess.run(rm_command, shell=True)
             
-            break
-            
+            c+=1
+            if c==5:break
+    
+    mean_null_prob = np.mean(null_prob)
+    mean_a_prob = np.mean(a_prob)
+    mean_b_prob = np.mean(b_prob)
+    print(f"phage {phage} null_prob: {mean_null_prob} a_prob: {mean_a_prob} b_prob: {mean_b_prob}")
