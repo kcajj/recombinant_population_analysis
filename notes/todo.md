@@ -1,11 +1,20 @@
-[] finding recombinant reads
-    [] viterbi algorithm
-        [x] generate data on the basis of given probabilities
-        [] understand viterbi script deeply
-        [x] make predictions on that data
-    [] test on Aionostat data
-        [] clones
-            [x] extract evidences from a clone sequence
-            [] make a prediction with the viterbi algorithm
-
-
+- [] finding recombinant reads
+    - [] viterbi algorithm
+        - [x] generate data on the basis of given probabilities
+        - [] understand viterbi script deeply
+        - [x] make predictions on that data
+    - [x] test on Aionostat data
+        - [x] clones
+            - [x] extract evidences from a clone sequence
+            - [x] make a prediction with the viterbi algorithm
+        - [x] reads
+            - [x] extract evidences from a read
+            - [x] make a prediction with the viterbi algorithm
+    - [] parameter estimation
+        - [] emission probabilities (analyse the reads of pure phages sequenced, infer the probabilities corresponding to each hidden state)
+            - [] build the msa of each read with the references and keep track of the frequency of evidences
+        - [] transition probabilities
+    - [] running on the whole dataset
+        - [] script to build msa of each read with references and analyse it
+        - [] extract and store the recombination data
+- [] representing whole-population recombination data
