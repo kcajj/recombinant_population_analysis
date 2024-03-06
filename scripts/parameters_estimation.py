@@ -43,7 +43,7 @@ for phage in phages:
                 temp_fasta.close()
 
             # create the alignment
-            msa_command = f"mafft --auto --addfragments {temp_fasta_path} {refs_msa_path} > {temp_output_path}"
+            msa_command = f"mafft --auto --adjustdirection --addfragments {temp_fasta_path} {refs_msa_path} > {temp_output_path}"
             subprocess.run(msa_command, shell=True)
 
             msa_matrix = read_msa(temp_output_path)
