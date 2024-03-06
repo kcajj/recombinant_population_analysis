@@ -163,5 +163,7 @@ the problem could be:
 
 1. reads that map badly cannot produce a good msa: probably wrong, the first read of EM11 maps really well with minimap2 but not with mafft
 2. maybe the reads are reversed or complemented: I will explore the .sam mapping of the first reads of the .fastq file to see if there is a correlation between a bad msa and some characteristic of the mapping of the read on the reference genome.
+turns out this is true, i already dealt with this problem in rec_genome_analysis and i took the reverse complement of the reads that were mapped in the in the other direction with minimap2. maybe i can try to use some options of mafft before implementing all of this again.
+i will try to use the --adjustdirection option, let's hope it is enough.
 
 also, right now the script takes the frequencies from the whole length of the genome. maybe we can limit somehow the region in which the read is mapping. (actually right now the script skips every type of gap so it doesn't consider the regions that are not mapped)
