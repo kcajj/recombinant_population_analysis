@@ -160,3 +160,5 @@ this will require a looooooot of time. i think we have to find another solution.
 WAIT! the huge amount of time is taken only by the reads that map badly in the msa. i.e. reads that map for the whole length of the references instead of in a specific region. if we fix this problem probably also the msa production time will be reduced a lot.
 
 idk what could be the reason of this problem.
+
+also, right now the script takes the frequencies from the whole length of the genome. maybe we can limit somehow the region in which the read is mapping. (actually right now the script skips every type of gap so it doesn't consider the regions that are not mapped)
