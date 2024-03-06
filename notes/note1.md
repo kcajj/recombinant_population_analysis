@@ -170,7 +170,9 @@ these are the results:
 mean time spent
 EM11   7.477514550685883
 EM60   10.225129489898682
-
 we can see if by giving in input directly the complemented reads and not using adjustidrectionaccurately we obtain a better result in terms of time.
+mean time spent
+EM11   2.8776113176345826
+EM60   6.12469485282898
 
 also, right now the script takes the frequencies from the whole length of the genome. maybe we can limit somehow the region in which the read is mapping.
