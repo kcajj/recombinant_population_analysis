@@ -2,35 +2,7 @@ from Bio import AlignIO
 import numpy as np
 import matplotlib.pyplot as plt
 from handle_msa import read_msa, get_evidences_distributions
-
-def viterbi(y, A, B, pi):
-    """
-        viterbi algorithm
-        :param y: observation sequence
-        :param A: the transition matrix
-        :param B: the emission matrix
-        :param pi: the initial probability distribution
-    """
-    N = B.shape[0]
-    x_seq = np.zeros([N, 0])
-    V = np.log(B[:, y[0]]) + np.log(pi)
-    
-    # forward to compute the optimal value function V
-    for y_ in y[1:]:
-        _V = np.log(np.tile(B[:, y_], reps=[N, 1]).T) + np.log(A.T) + np.tile(V, reps=[N, 1])
-        x_ind = np.argmax(_V, axis=1)
-        x_seq = np.hstack([x_seq, np.c_[x_ind]])
-        V = _V[np.arange(N), x_ind]
-    x_T = np.argmax(V)
-
-    # backward to fetch optimal sequence
-    x_seq_opt, i = np.zeros(x_seq.shape[1]+1), x_seq.shape[1]
-    prev_ind = x_T
-    while i >= 0:
-        x_seq_opt[i] = prev_ind
-        i -= 1
-        prev_ind = x_seq[int(prev_ind), i]
-    return x_seq_opt
+from viterbi import viterbi_algorithm
     
 initial_p={"A":0.5,"B":0.5}
 
@@ -62,11 +34,11 @@ if __name__ == "__main__":
             file=f'results/msa/clones/{population}_{clone}_msa.fasta'
             out_folder=f'results/plots/clones/{population}_{clone}_msa.png'
 
-            msa_matrix=read_msa(file)
+            msa_matrix = read_msa(file)
 
             e_distribution = get_evidences_distributions(msa_matrix,i_ref1=1,i_ref2=2,i_extra=0)
             
-            hmm_prediction = viterbi(e_distribution, tp_np, ep_np, ip_np)
+            hmm_prediction = viterbi_algorithm(e_distribution, tp_np, ep_np, ip_np)
 
             plt.subplot(2, 1, 1)
             plt.scatter(range(len(e_distribution)), e_distribution, c=e_distribution, marker='|', alpha=0.5)

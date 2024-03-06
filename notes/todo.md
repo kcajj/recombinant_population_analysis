@@ -17,4 +17,5 @@
     - [] running on the whole dataset
         - [] script to build msa of each read with references and analyse it
         - [] extract and store the recombination data
+            - [] position of recombination on the reference genome
 - [] representing whole-population recombination data
