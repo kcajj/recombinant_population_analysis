@@ -36,16 +36,20 @@ if __name__ == "__main__":
 
             msa_matrix = read_msa(file)
 
-            e_distribution = get_evidences_distributions(msa_matrix,i_ref1=1,i_ref2=2,i_extra=0)
+            e_distribution_to_plot = get_evidences_distributions(msa_matrix,i_ref1=1,i_ref2=2,i_extra=0)
+
+            e_distribution = np.where(e_distribution_to_plot > 0, e_distribution_to_plot-1, e_distribution_to_plot)
             
             hmm_prediction = viterbi_algorithm(e_distribution, tp_np, ep_np, ip_np)
 
             plt.subplot(2, 1, 1)
-            plt.scatter(range(len(e_distribution)), e_distribution, c=e_distribution, marker='|', alpha=0.5)
-            plt.title('evidence distribution (purple no evidence, green evidence for A, yellow evidence for B)')
+            colours = np.where(e_distribution_to_plot == 0, "green", np.where(e_distribution_to_plot == 1, "red", np.where(e_distribution_to_plot == 2, "orange", "blue")))
+            plt.scatter(range(len(e_distribution_to_plot)), e_distribution_to_plot, c=colours, marker='|', alpha=0.5)
+            plt.title('evidence distribution (0:same, 1:err, 2:a, 3:b)')
 
             plt.subplot(2, 1, 2)
-            plt.plot(hmm_prediction)
+            colours = np.where(hmm_prediction == 0, "orange", "blue")
+            plt.scatter(range(len(hmm_prediction)), hmm_prediction, c=colours, marker='|', alpha=0.5)
             plt.title(f'hmm prediction {population}, {clone} (0:A, 1:B)')
 
             plt.tight_layout()
