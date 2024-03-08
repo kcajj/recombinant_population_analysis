@@ -176,3 +176,11 @@ EM11   2.8776113176345826
 EM60   6.12469485282898
 
 also, right now the script takes the frequencies from the whole length of the genome. maybe we can limit somehow the region in which the read is mapping.
+
+
+
+
+
+
+
+
