@@ -1,14 +1,14 @@
 import gzip
-from Bio import SeqIO,bgzf
+from Bio import SeqIO,AlignIO
 from Bio.Seq import Seq
 import numpy as np
 import matplotlib.pyplot as plt
 import subprocess
 from handle_msa import read_msa, get_evidences_distributions
+from map_dictionary import map_refcoord_msacoord
 import time
 from collections import defaultdict
 import pysam
-from Bio import AlignIO
 
 '''
 
@@ -17,7 +17,7 @@ it is not important for the recombination analysis
 
 '''
 
-phages=['EM11','EM60']
+phages={'EM11':0,'EM60':1}
 
 refs_msa_path="results/msa/refs_msa.fasta"
 
@@ -27,6 +27,8 @@ b_prob=defaultdict(list)
 time_spent=defaultdict(list)
 
 for phage in phages:
+
+    map_ref_msa=map_refcoord_msacoord(f"data/references/{phage}_assembly.fasta",refs_msa_path,i_ref_in_msa=phages[phage])
     
     temp_fasta_path = f"results/temp/{phage}_read.fasta"
     temp_output_path = f"results/temp/{phage}_read_msa.fasta"
@@ -45,9 +47,9 @@ for phage in phages:
                     #find the start and end of mapping. index the ref seuqneces with start and end indexes.
                     mapping_start=read.reference_start
                     mapping_end=read.reference_end
-                    alignment = AlignIO.read(open(refs_msa_path), "fasta")
-                    alignment=alignment[:,mapping_start:mapping_end]
-                    AlignIO.write(alignment, temp_refs_msa_path, "fasta")
+                    alignment=AlignIO.read(open(refs_msa_path), "fasta")
+                    cut_alignment=alignment[:,map_ref_msa[mapping_start]:map_ref_msa[mapping_end]]
+                    AlignIO.write(cut_alignment, temp_refs_msa_path, "fasta")
 
                     # we need to align the read to the refs_msa.fasta file and extract the evidences
                     start_time=time.time()
@@ -62,6 +64,7 @@ for phage in phages:
                     subprocess.run(msa_command, shell=True)
 
                     msa_matrix = read_msa(temp_output_path)
+
                     print()
                     print()
                     print()
