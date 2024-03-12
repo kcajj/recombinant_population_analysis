@@ -30,6 +30,11 @@ def get_evidences_distributions(msa_matrix,i_ref1,i_ref2,i_extra):
                 e_distribution[pos]=2
             elif nuc_extra!=nuc_first_ref and nuc_extra==nuc_second_ref:
                 e_distribution[pos]=3
+        elif nuc_first_ref=="-" and nuc_second_ref=="-":
+            if nuc_extra==nuc_first_ref:
+                continue
+            elif nuc_extra!=nuc_first_ref:
+                e_distribution[pos]=1
 
     return e_distribution
 
