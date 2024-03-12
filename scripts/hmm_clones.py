@@ -42,17 +42,20 @@ if __name__ == "__main__":
             
             hmm_prediction = viterbi_algorithm(e_distribution, tp_np, ep_np, ip_np)
 
-            plt.subplot(2, 1, 1)
+            hmm_plot, (evidences, prediction) = plt.subplots(2, 1, figsize=(10, 5))
+            hmm_plot.suptitle(f'HMM {population}, {clone}')
+
             colours = np.where(e_distribution_to_plot == 0, "green", np.where(e_distribution_to_plot == 1, "red", np.where(e_distribution_to_plot == 2, "orange", "blue")))
-            plt.scatter(range(len(e_distribution_to_plot)), e_distribution_to_plot, c=colours, marker='|', alpha=0.5)
-            plt.title('evidence distribution (0:same, 1:err, 2:a, 3:b)')
+            evidences.scatter(range(len(e_distribution_to_plot)), e_distribution_to_plot, c=colours, marker='|', alpha=0.5)
+            evidences.set_title('evidence distribution (0:same, 1:err, 2:a, 3:b)')
+            evidences.set_xlabel("basepair")
+            evidences.set_ylabel("visible states")
 
-            plt.subplot(2, 1, 2)
             colours = np.where(hmm_prediction == 0, "orange", "blue")
-            plt.scatter(range(len(hmm_prediction)), hmm_prediction, c=colours, marker='|', alpha=0.5)
-            plt.title(f'hmm prediction {population}, {clone} (0:A, 1:B)')
+            prediction.scatter(range(len(hmm_prediction)), hmm_prediction, c=colours, marker='|', alpha=0.5)
+            prediction.set_title(f'HHMM prediction (0:A, 1:B)')
+            prediction.set_xlabel("basepair")
+            prediction.set_ylabel("hidden states")
 
-            plt.tight_layout()
-            plt.savefig(out_folder)
-            #plt.show()
-            plt.close()
+            hmm_plot.tight_layout()
+            hmm_plot.savefig(out_folder)

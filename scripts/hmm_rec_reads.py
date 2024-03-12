@@ -1,11 +1,10 @@
 from Bio import AlignIO
 import numpy as np
 import matplotlib.pyplot as plt
-from handle_msa import read_msa, get_evidences_distributions
+from handle_msa import read_msa, get_evidences_distributions, map_refcoord_msacoord
 from viterbi import viterbi_algorithm
 import pysam
 from collections import defaultdict
-from map_dictionary import map_refcoord_msacoord
 import time
 import subprocess
     
@@ -100,20 +99,23 @@ if __name__ == "__main__":
                             end_time=time.time()
                             time_spent[population].append(end_time-start_time)
 
-                            plt.subplot(2, 1, 1)
+                            hmm_plot, (evidences, prediction) = plt.subplots(2, 1, figsize=(10, 5))
+                            hmm_plot.suptitle(f'HMM read {c}, {population}, t{timestep}')
+
                             colours = np.where(e_distribution_to_plot == 0, "green", np.where(e_distribution_to_plot == 1, "red", np.where(e_distribution_to_plot == 2, "orange", "blue")))
-                            plt.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), e_distribution_to_plot, c=colours, marker='|', alpha=0.5)
-                            plt.title('evidence distribution (0:same, 1:err, 2:a, 3:b)')
+                            evidences.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), e_distribution_to_plot, c=colours, marker='|', alpha=0.5)
+                            evidences.set_title('evidence distribution (0:same, 1:err, 2:a, 3:b)')
+                            evidences.set_xlabel("basepair")
+                            evidences.set_ylabel("visible states")
 
-                            plt.subplot(2, 1, 2)
                             colours = np.where(hmm_prediction == 0, "orange", "blue")
-                            plt.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), hmm_prediction, c=colours, marker='|', alpha=0.5)
-                            plt.title(f'hmm prediction read {c}, {population}, t{timestep} (0:A, 1:B)')
+                            prediction.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), hmm_prediction, c=colours, marker='|', alpha=0.5)
+                            prediction.set_title(f'hmm prediction (0:A, 1:B)')
+                            prediction.set_xlabel("basepair")
+                            prediction.set_ylabel("hidden states")
 
-                            plt.tight_layout()
-                            plt.savefig(plot_path)
-                            #plt.show()
-                            plt.close()
+                            hmm_plot.tight_layout()
+                            hmm_plot.savefig(plot_path)
 
                             #remove temporary files
                             rm_command = f"rm {temp_fasta_path} {temp_output_path} {temp_refs_msa_path}"
