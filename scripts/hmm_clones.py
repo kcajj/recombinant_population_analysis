@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
             colours = np.where(hmm_prediction == 0, "orange", "blue")
             prediction.scatter(range(len(hmm_prediction)), hmm_prediction, c=colours, marker='|', alpha=0.5)
-            prediction.set_title(f'HHMM prediction (0:A, 1:B)')
+            prediction.set_title(f'HMM prediction (0:A, 1:B)')
             prediction.set_xlabel("basepair")
             prediction.set_ylabel("hidden states")
 

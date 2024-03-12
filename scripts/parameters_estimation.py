@@ -78,11 +78,12 @@ for phage in phages:
                     null_prob[phage].append(np.count_nonzero(e_distribution == 0)/l)
                     a_prob[phage].append(np.count_nonzero(e_distribution == 1)/l)
                     b_prob[phage].append(np.count_nonzero(e_distribution == 2)/l)
+                    
                     end_time=time.time()
                     time_spent[phage].append(end_time-start_time)
 
-                    plt.scatter(range(len(e_distribution_to_plot)), e_distribution_to_plot, c=e_distribution_to_plot, marker='|', alpha=0.5)
-                    plt.title('evidence distribution (purple no evidence, green evidence for A, yellow evidence for B)')
+                    #plt.scatter(range(len(e_distribution_to_plot)), e_distribution_to_plot, c=e_distribution_to_plot, marker='|', alpha=0.5)
+                    #plt.title('evidence distribution (purple no evidence, green evidence for A, yellow evidence for B)')
 
                     #plt.show()
 
