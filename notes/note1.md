@@ -189,9 +189,9 @@ We can take the start and end positions for the alignment found by minimap2 and 
 
 there are two main problems in this approach:
 
-1. We have the mapping information for the read on just one reference, can we use this information to index both references. we will discuss about this problem in [mapping between references](notes/mapping_between_references) note.
+1. We have the mapping information for the read on just one reference, can we use this information to index both references. we will discuss about this problem in [mapping between references](notes/mapping_between_references.md) note.
 
-2. How can we translate the normal index position of a reference to the positions in the msa? to do this i created the [map_dictionary.py](scripts/map_dictionary.py) script.
+2. How can we translate the normal index position of a reference to the positions in the msa? to do this i created the [map_dictionary](scripts/handle_msa.py) function.
 
 now that we have solved these problems we can apply the approach. I will run the script on 100 reads taken more or less randomly along the genome.
 
@@ -232,9 +232,3 @@ in this case we go through the reads mapped to both references, for each read:
 - we add the read to the msa
 - we do the prediction on the total msa
 - we plot the result
-
-
-
-
-
-

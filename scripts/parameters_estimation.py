@@ -4,8 +4,7 @@ from Bio.Seq import Seq
 import numpy as np
 import matplotlib.pyplot as plt
 import subprocess
-from handle_msa import read_msa, get_evidences_distributions
-from map_dictionary import map_refcoord_msacoord
+from handle_msa import read_msa, get_evidences_distributions, map_refcoord_msacoord
 import time
 from collections import defaultdict
 import pysam
