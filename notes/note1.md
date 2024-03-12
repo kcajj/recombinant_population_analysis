@@ -127,6 +127,8 @@ to obtain sensible results from i modified the viterbi algorithm to do additions
 this is the result:
 ![example_clone_prediction](../results/plots/clones/P2_C2_msa.png)
 
+WHAT TO DO WITH GAPS? we try to give an answer [here](gaps.md)
+
 ### test on reads of phage population
 
 the same procedure is applied to the reads of the population. in this case the array of evidences is much more noisy:
@@ -151,37 +153,42 @@ to estimate the emission probabilities we can use reads of a sequencing run of a
 
 The creation of the msa between the two references and a read takes more or less 30 seconds.
 
-this will require a looooooot of time. i think we have to find another solution.
+1. TIME PROBLEM
 
-1. we could run the same script in parallel for multiple reads.
+    - we could run the same script in parallel for multiple reads.
 
-2. we could align multiple reads at the same time.
+    - we could align multiple reads at the same time.
 
-WAIT! the huge amount of time is taken only by the reads that map badly in the msa. i.e. reads that map for the whole length of the references instead of in a specific region. if we fix this problem probably also the msa production time will be reduced a lot.
+    WAIT! the huge amount of time is taken only by the reads that map badly in the msa. i.e. reads that map for the whole length of the references instead of in a specific region. if we fix this problem probably also the msa production time will be reduced a lot.
 
-the problem could be:
+    the problem could be:
 
-1. reads that map badly cannot produce a good msa: probably wrong, the first read of EM11 maps really well with minimap2 but not with mafft
-2. maybe the reads are reversed or complemented: I will explore the .sam mapping of the first reads of the .fastq file to see if there is a correlation between a bad msa and some characteristic of the mapping of the read on the reference genome.
-    turns out this is true, i already dealt with this problem in rec_genome_analysis and i took the reverse complement of the reads that were mapped in the in the other direction with minimap2. maybe i can try to use some options of mafft before implementing all of this again.
-    
-    i will try to use the --adjustdirection option, let's hope it is enough. it doesn't work, i will try with --adjustdirectionaccurately. it works!!! still it's a bit slow. I will try to run 100 reads for each phage to have an idea of the time needed.
+    1. reads that map badly cannot produce a good msa: probably wrong, the first read of EM11 maps really well with minimap2 but not with mafft
+    2. maybe the reads are reversed or complemented: I will explore the .sam mapping of the first reads of the .fastq file to see if there is a correlation between a bad msa and some characteristic of the mapping of the read on the reference genome.
+        turns out this is true, i already dealt with this problem in rec_genome_analysis and i took the reverse complement of the reads that were mapped in the in the other direction with minimap2. maybe i can try to use some options of mafft before implementing all of this again.
+        
+        i will try to use the --adjustdirection option, let's hope it is enough. it doesn't work, i will try with --adjustdirectionaccurately. it works!!! still it's a bit slow. I will try to run 100 reads for each phage to have an idea of the time needed.
 
-    these are the results:
-    <pre>
-    mean time spent
-    EM11   7.477514550685883
-    EM60   10.225129489898682
-    </pre>
-    we can see if by giving in input directly the complemented reads and not using adjustidrectionaccurately we obtain a better result in terms of time. i will do this by using read.query_sequence, according to pysam documentation it gives the read sequence already complemented if the read is binding reversely.
-    <pre>
-    mean time spent
-    EM11   2.8776113176345826
-    EM60   6.12469485282898
-    </pre>
-    This time is really not acceptable. Also, right now the script takes the frequencies from the whole length of the genome. maybe we can limit somehow the region in which the read is mapping.
+        these are the results:
+        <pre>
+        mean time spent
+        EM11   7.477514550685883
+        EM60   10.225129489898682
+        </pre>
+        we can see if by giving in input directly the complemented reads and not using adjustidrectionaccurately we obtain a better result in terms of time. i will do this by using read.query_sequence, according to pysam documentation it gives the read sequence already complemented if the read is binding reversely.
+        <pre>
+        mean time spent
+        EM11   2.8776113176345826
+        EM60   6.12469485282898
+        </pre>
+        This time is really not acceptable.
+2. BORDERS OF THE READ PROBLEM
 
-In order to solve these problems we will try another approach: CUTTING THE MSA AROUND THE MAPPING REGION OF THE READ INDIVIDUATED WITH MINIMAP
+    right now the script takes the frequencies from the whole length of the genome. maybe we can limit somehow the region in which the read is mapping.
+
+In order to solve these problems we will try another approach: 
+
+CUTTING THE MSA AROUND THE MAPPING REGION OF THE READ INDIVIDUATED WITH MINIMAP
 
 since we are iterating through the bam file of the alignment between the reads of the sequencing run for a pure phage and the genome of the phage, we already have alignment information.
 
@@ -189,11 +196,11 @@ We can take the start and end positions for the alignment found by minimap2 and 
 
 there are two main problems in this approach:
 
-1. We have the mapping information for the read on just one reference, can we use this information to index both references. we will discuss about this problem in [mapping between references](notes/mapping_between_references.md) note.
+1. We have the mapping information for the read on just one reference, can we use this information to index both references. we will discuss about this problem in [this notebook](../notebooks/refs_plots.ipynb).
 
-2. How can we translate the normal index position of a reference to the positions in the msa? to do this i created the [map_dictionary](scripts/handle_msa.py) function.
+2. We have to create a map from the index of the plain references to their msa. to do this i created the [map_dictionary](scripts/handle_msa.py) function.
 
-now that we have solved these problems we can apply the approach. I will run the script on 100 reads taken more or less randomly along the genome.
+Now that we have solved these problems we can apply the approach. I will run the script on 100 reads taken more or less randomly along the genome.
 
 <pre>
 
@@ -210,25 +217,26 @@ EM11   0.008933225120309123
 EM60   0.021838776758143563
 
 mean time spent
-EM11   0.6771898984909057
-EM60   0.5049880504608154
+EM11   0.5517718839645386
+EM60   0.3548362874984741
 
 </pre>
 
 The time is becoming acceptable.
 
-The occurrences of evidences are weirdly different betweeen different phages.
+The occurrences of evidences are weirdly different betweeen different phages. Maybe due to gaps? see [gaps.md](gaps.md)
 
 ### reads of phage population
 
-now that we have an idea of teh parameters of our model, we can start to set up the prediction framework.
+now that we have an idea of the parameters of our model, we can start to set up the prediction framework.
 
 We will use the same approach as for parameter estimation.
 
 in this case we go through the reads mapped to both references, for each read:
+- we check that it is not a secondary or supplementary alignment
 - we check to which reference it is aligned
 - we extract the start and end of alignmeeent
 - we cut the msa on the basis of the index_map between the phage reference of the read and the msa of both references
-- we add the read to the msa
-- we do the prediction on the total msa
+- we add the read to the msa. we give to mafft the whole read sequence (even if it maps less) and we ask mafft to do the msa by keeping the length of the two references. (DO WE HAVE TO CHANGE THIS?)
+- we do the prediction on msa of the 3 sequences
 - we plot the result
