@@ -53,7 +53,9 @@ This is an example:
 
 ### time problem
 
-100 k to 300 k reads per bam file. mean time spent for each read: 0.5 s (calculated on a relatively small sample).
+100 k to 300 k reads per bam file.
+
+mean time spent for each read: 0.688582741936972 s (calculated on a relatively small sample).
 
 We are using the most approximate algorithm of MAFFT. Are we making a lot of mistakes?
 
