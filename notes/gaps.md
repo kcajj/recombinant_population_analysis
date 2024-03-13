@@ -22,3 +22,5 @@
 - -,x,x: evidence 2
 - x,-,-: ?
 - -,x,-: ?
+
+maybe add a specific visible state in the model?

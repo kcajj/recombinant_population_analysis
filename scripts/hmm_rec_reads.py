@@ -13,8 +13,8 @@ initial_p={"A":0.5,"B":0.5}
 transition_p_froma={"A":0.999,"B":0.001}
 transition_p_fromb={"A":0.001,"B":0.999}
 
-emission_p_froma={".":0.60,"a":0.30,"b":0.10}
-emission_p_fromb={".":0.60,"a":0.10,"b":0.30}
+emission_p_froma={".":0.949,"a":0.05,"b":0.001}
+emission_p_fromb={".":0.949,"a":0.001,"b":0.05}
 
 ip_np=np.array(list(initial_p.values()))
 tp_np=np.array([list(transition_p_froma.values()),

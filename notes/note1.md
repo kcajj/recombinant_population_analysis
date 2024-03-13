@@ -1,4 +1,4 @@
-# Finding the recombinant reads
+# FINDING RECOMBINANT READS
 
 The problem we are facing and the strategy to solve it are well explained in [this pdf](plan.pdf).
 
@@ -7,7 +7,7 @@ For the following notes I will use the following notation:
 - B: second phage genome
 - a: evidence on the read for the 
 
-## Create a functioning HMM script
+## 1. Create a functioning HMM script
 
 The first step is to create a working HMM that can get in input the type of data we are dealing with (an array of recombination evidences, a/./b), and that provides in output what we expect (the series of hidden states corresponing to the genome that provided the particular evidence, A/B).
 
@@ -91,7 +91,7 @@ the prediction is 100% correct. I will run the script multiple times with random
 
 the accuracy is always around 99%. for now we are happy with this result.
 
-## make predictions on Aionostat data
+## 2. Test on Aionostat data
 
 ### phage isolates sequences
 
@@ -113,7 +113,7 @@ for the clones i used the following matrices:
 |    |0       |1       |
 |----|--------|--------|
 |0   |0.999   |0.001   |
-|1   |0.00    |0.999   |
+|1   |0.001   |0.999   |
 
 - emission probability matrix
 
@@ -145,9 +145,9 @@ these problems were just due to a bug in the code, the actual situation is much 
 
 at this point it would be nice to infer the correct parameters of the probability matrices.
 
-#### parameters estimation
+## 3. Parameters estimation
 
-##### emission probabilities
+### emission probabilities of reads
 
 to estimate the emission probabilities we can use reads of a sequencing run of a pure phage. by aligning these reads to the msa of references we can see with which frequency ., a and b evidences occur. we will just count the occurrence of each visible state.
 
@@ -222,11 +222,11 @@ EM60   0.3548362874984741
 
 </pre>
 
-The time is becoming acceptable.
+The time is becoming acceptable. We obtained this time by using the fastest msa method of MAFFT
 
 The occurrences of evidences are weirdly different betweeen different phages. Maybe due to gaps? see [gaps.md](gaps.md)
 
-### reads of phage population
+## 4. prediction on reads of phage population
 
 now that we have an idea of the parameters of our model, we can start to set up the prediction framework.
 
