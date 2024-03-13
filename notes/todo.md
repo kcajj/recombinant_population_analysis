@@ -1,8 +1,10 @@
-- [] finding recombinant reads
-    - [] viterbi algorithm
+- [ ] finding recombinant reads
+
+    - [ ] viterbi algorithm
         - [x] generate data on the basis of given probabilities
         - [] understand viterbi script deeply
         - [x] make predictions on that data
+
     - [x] test on Aionostat data
         - [x] clones
             - [x] extract evidences from a clone sequence
@@ -10,12 +12,30 @@
         - [x] reads
             - [x] extract evidences from a read
             - [x] make a prediction with the viterbi algorithm
-    - [] parameter estimation
-        - [] emission probabilities (analyse the reads of pure phages sequenced, infer the probabilities corresponding to each hidden state)
-            - [] build the msa of each read with the references and keep track of the frequency of evidences
-        - [] transition probabilities
-    - [] running on the whole dataset
-        - [] script to build msa of each read with references and analyse it
-        - [] extract and store the recombination data
-            - [] position of recombination on the reference genome
-- [] representing whole-population recombination data
+
+    - [ ] parameter estimation
+        - [ ] emission probabilities
+            - [ ] reads (analyse the reads of pure phages sequenced, infer the probabilities corresponding to each hidden state)
+                - [x] build the msa of each read with the references and keep track of the frequency of evidences
+            - [ ] clones
+        - [ ] transition probabilities
+
+    - [x] alignment between references
+        - [x] snps and indels frequency
+
+    - [ ] gaps
+        - [x] what happens if we don't consider gaps
+        - [x] what happens if we consider gaps
+        - [ ] what is the best option?
+
+    - [ ] running on the whole dataset
+        - [ ] script to build msa of each read with references and analyse it
+            - [x] map the reference index to the msa index
+            - [x] cut the msa
+            - [x] add the read to the msa
+            - [ ] we are using the fastest msa method possible. are we making a lot of error?
+            - [ ] we are letting MAFFT trim the reads to keep the length of the cut alignment the same. are we trimming a lot?
+        - [ ] extract and store the recombination data
+            - [ ] position of recombination on the reference genome
+
+- [ ] representing whole-population recombination data
