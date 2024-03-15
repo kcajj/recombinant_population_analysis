@@ -26,7 +26,7 @@ b_prob=defaultdict(list)
 time_spent=defaultdict(list)
 
 for phage in phages:
-
+    
     map_ref_msa=map_refcoord_msacoord(f"data/references/{phage}_assembly.fasta",refs_msa_path,i_ref_in_msa=phages[phage])
     
     temp_fasta_path = f"results/temp/{phage}_read.fasta"
@@ -43,6 +43,7 @@ for phage in phages:
                     #else:
                     #    read_sequence=Seq(read.get_forward_sequence())
                     read_sequence=read.query_sequence
+
                     #find the start and end of mapping. index the ref seuqneces with start and end indexes.
                     mapping_start=read.reference_start
                     mapping_end=read.reference_end
@@ -84,7 +85,6 @@ for phage in phages:
 
                     #plt.scatter(range(len(e_distribution_to_plot)), e_distribution_to_plot, c=e_distribution_to_plot, marker='|', alpha=0.5)
                     #plt.title('evidence distribution (purple no evidence, green evidence for A, yellow evidence for B)')
-
                     #plt.show()
 
                     #remove temporary files
@@ -107,6 +107,11 @@ print("")
 print("mean b probability")
 for k,v in b_prob.items():
     print(k," ",np.mean(v))
+print("")
+
+print("sum")
+for phage in phages:
+    print(f"{phage}: {np.mean(null_prob[phage])+np.mean(a_prob[phage])+np.mean(b_prob[phage])}")
 print("")
 
 print("mean time spent")

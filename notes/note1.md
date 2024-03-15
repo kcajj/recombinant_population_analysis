@@ -240,3 +240,38 @@ in this case we go through the reads mapped to both references, for each read:
 - we add the read to the msa. we give to mafft the whole read sequence (even if it maps less) and we ask mafft to do the msa by keeping the length of the two references. (DO WE HAVE TO CHANGE THIS?)
 - we do the prediction on msa of the 3 sequences
 - we plot the result
+
+
+the ap
+
+
+new parameters estimation:
+
+I AM WORKING WITH THE PURE PHAGE SEQUENCING RUN ALIGNMENT MADE ON THE FORWARD SEQUENCE OF THE PHAGE AND WITH THE RECOMBINANT ANALYSIS + MSA MADE ON THE REVERSE COMPLEMENT.
+
+I NEED TO REALING THE READS.
+
+minimap2 -ax map-ont references/EM11_assembly.fasta EM11_new_chemistry.fastq.gz > new_chemistry_EM11.sam
+
+samtools sort -@ 4 -o new_chemistry_EM11.bam new_chemistry_EM11.sam
+samtools index new_chemistry_EM11.bam new_chemistry_EM11.bam.bai
+
+mean null probability
+EM11   0.9747077404528025
+EM60   0.9772102791664006
+
+mean a probability
+EM11   0.024958402540660604
+EM60   0.0009509440754558615
+
+mean b probability
+EM11   0.0003338570065367876
+EM60   0.021838776758143563
+
+sum
+EM11: 0.9999999999999999
+EM60: 1.0
+
+mean time spent
+EM11   0.38000538110733034
+EM60   0.4888264489173889
