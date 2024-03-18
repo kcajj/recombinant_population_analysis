@@ -9,13 +9,6 @@ import time
 from collections import defaultdict
 import pysam
 
-'''
-
-this script gives some statistics on the fastq files of the nanopore run,
-it is not important for the recombination analysis
-
-'''
-
 phages={'EM11':0,'EM60':1}
 
 refs_msa_path="results/msa/refs_msa.fasta"

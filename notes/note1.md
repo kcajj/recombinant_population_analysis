@@ -224,37 +224,19 @@ EM60   0.3548362874984741
 
 The time is becoming acceptable. We obtained this time by using the fastest msa method of MAFFT
 
-The occurrences of evidences are weirdly different betweeen different phages. Maybe due to gaps? see [gaps.md](gaps.md)
+The occurrences of evidences are weirdly different betweeen different phages: there is a mistake.
 
-## 4. prediction on reads of phage population
+THE PROBLEM IS THAT I AM WORKING WITH THE PURE PHAGE SEQUENCING RUN ALIGNMENT MADE ON THE FORWARD SEQUENCE OF THE PHAGE AND WITH THE RECOMBINANT ANALYSIS + MSA MADE ON THE REVERSE COMPLEMENT.
 
-now that we have an idea of the parameters of our model, we can start to set up the prediction framework.
+I will realign the reads:
 
-We will use the same approach as for parameter estimation.
-
-in this case we go through the reads mapped to both references, for each read:
-- we check that it is not a secondary or supplementary alignment
-- we check to which reference it is aligned
-- we extract the start and end of alignmeeent
-- we cut the msa on the basis of the index_map between the phage reference of the read and the msa of both references
-- we add the read to the msa. we give to mafft the whole read sequence (even if it maps less) and we ask mafft to do the msa by keeping the length of the two references. (DO WE HAVE TO CHANGE THIS?)
-- we do the prediction on msa of the 3 sequences
-- we plot the result
-
-
-the ap
-
-
-new parameters estimation:
-
-I AM WORKING WITH THE PURE PHAGE SEQUENCING RUN ALIGNMENT MADE ON THE FORWARD SEQUENCE OF THE PHAGE AND WITH THE RECOMBINANT ANALYSIS + MSA MADE ON THE REVERSE COMPLEMENT.
-
-I NEED TO REALING THE READS.
-
+<pre>
 minimap2 -ax map-ont references/EM11_assembly.fasta EM11_new_chemistry.fastq.gz > new_chemistry_EM11.sam
-
 samtools sort -@ 4 -o new_chemistry_EM11.bam new_chemistry_EM11.sam
 samtools index new_chemistry_EM11.bam new_chemistry_EM11.bam.bai
+</pre>
+
+now the results are the follwing:
 
 mean null probability
 EM11   0.9747077404528025
@@ -275,3 +257,22 @@ EM60: 1.0
 mean time spent
 EM11   0.38000538110733034
 EM60   0.4888264489173889
+
+much nicer!! now we can use these parameters for the model!
+
+## 4. prediction on reads of phage population
+
+now that we have an idea of the parameters of our model, we can start to set up the prediction framework.
+
+We will use the same approach as for parameter estimation.
+
+in this case we go through the reads mapped to both references, for each read:
+- we check that it is not a secondary or supplementary alignment
+- we check to which reference it is aligned
+- we extract the start and end of alignmeeent
+- we cut the msa on the basis of the index_map between the phage reference of the read and the msa of both references
+- we add the read to the msa. we give to mafft the whole read sequence (even if it maps less) and we ask mafft to do the msa by keeping the length of the two references. (DO WE HAVE TO CHANGE THIS?)
+- we do the prediction on msa of the 3 sequences
+- we plot the result
+
+The analysis takes roughly: 0.7569327437600424 seconds per read
