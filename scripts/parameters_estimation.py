@@ -37,7 +37,8 @@ for phage in phages:
 
                 #find the start and end of mapping. index the ref seuqneces with start and end indexes.
                 mapping_start=read.reference_start
-                mapping_end=read.reference_end
+                mapping_end=read.reference_end-1
+
                 alignment=AlignIO.read(open(refs_msa_path), "fasta")
                 cut_alignment=alignment[:,map_ref_msa[mapping_start]:map_ref_msa[mapping_end]]
                 AlignIO.write(cut_alignment, temp_refs_msa_path, "fasta")
@@ -56,17 +57,6 @@ for phage in phages:
 
                 msa_matrix = read_msa(temp_output_path)
 
-                print()
-                print()
-                print()
-                print(read.query_name)
-                print(mapping_start,mapping_end)
-                print(c)
-                print()
-                print()
-                print()
-                
-
                 e_distribution_to_plot = get_evidences_distributions(msa_matrix)
 
                 e_distribution = np.where(e_distribution_to_plot > 0, e_distribution_to_plot-1, e_distribution_to_plot)
@@ -84,6 +74,16 @@ for phage in phages:
                 subprocess.run(rm_command, shell=True)
                     
                 c+=1
+                print()
+                print()
+                print()
+                print(read.query_name)
+                print(mapping_start,mapping_end)
+                print(map_ref_msa[mapping_start],map_ref_msa[mapping_end])
+                print(c)
+                print()
+                print()
+                print()
 
 print("mean null probability")
 for k,v in null_prob.items():
