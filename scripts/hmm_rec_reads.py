@@ -1,11 +1,12 @@
 from Bio import AlignIO
 import numpy as np
 import matplotlib.pyplot as plt
-from handle_msa import read_msa, get_evidences_distributions, map_refcoord_msacoord, add_to_msa
+from handle_msa import get_evidences_distributions, add_to_msa, length_msa
 from viterbi import viterbi_algorithm
 import pysam
 from collections import defaultdict
 import time
+import plotly.express as px
     
 initial_p={"A":0.5,"B":0.5}
 
@@ -29,15 +30,19 @@ if __name__ == "__main__":
 
     population='P2'
     timestep='7'
-    
+
     phages={'EM11':0,'EM60':1}
 
     refs_msa_path="results/msa/refs_msa.fasta"
 
-    time_spent=defaultdict(list)
-
     bam_file=f"data/test/hybrid_test_{population}_{timestep}.bam"
 
+    output_path=f"results/plots/genomewide_recombination/"
+
+    l=length_msa(refs_msa_path)
+    recombination_distribution=np.zeros(l,dtype=int)
+
+    time_spent=defaultdict(list)
     c=0
     with pysam.AlignmentFile(bam_file, "rb") as bam:
         for read in bam.fetch():
@@ -63,34 +68,23 @@ if __name__ == "__main__":
                             read_msa_seq+=read_seq[read_pos].lower()
 
                 msa_matrix = add_to_msa(refs_msa_path, read_msa_seq, mapping_start, mapping_end)
-                
+
                 e_distribution_to_plot = get_evidences_distributions(msa_matrix)
 
                 e_distribution = np.where(e_distribution_to_plot > 0, e_distribution_to_plot-1, e_distribution_to_plot)
 
                 hmm_prediction = viterbi_algorithm(e_distribution, tp_np, ep_np, ip_np)
 
+                pre_status = hmm_prediction[0]
+                for i in range(len(hmm_prediction)):
+                    post_status = hmm_prediction[i]
+                    if pre_status != post_status:
+                        recombination_distribution[i] += 1
+                    pre_status = post_status
+
                 end_time=time.time()
                 time_spent[population].append(end_time-start_time)
 
-                hmm_plot, (evidences, prediction) = plt.subplots(2, 1, figsize=(10, 5))
-                hmm_plot.suptitle(f'HMM read {c}, {population}, t{timestep}')
-
-                colours = np.where(e_distribution_to_plot == 0, "green", np.where(e_distribution_to_plot == 1, "red", np.where(e_distribution_to_plot == 2, "orange", "blue")))
-                evidences.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), e_distribution_to_plot, c=colours, marker='|', alpha=0.5)
-                evidences.set_title('evidence distribution (0:same, 1:err, 2:a, 3:b)')
-                evidences.set_xlabel("basepair")
-                evidences.set_ylabel("visible states")
-
-                colours = np.where(hmm_prediction == 0, "orange", "blue")
-                prediction.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), hmm_prediction, c=colours, marker='|', alpha=0.5)
-                prediction.set_title(f'HMM prediction (0:A, 1:B)')
-                prediction.set_xlabel("basepair")
-                prediction.set_ylabel("hidden states")
-
-                hmm_plot.tight_layout()
-                hmm_plot.savefig(plot_path)
-                
                 print(c)
             c+=1
 
@@ -98,3 +92,13 @@ print("mean time spent")
 for k,v in time_spent.items():
     print(k," ",np.mean(v))
 print("")
+
+conv_rec_dist = np.convolve(recombination_distribution, np.ones(100), mode='valid')/100
+plt.figure(figsize=(20, 5))
+plt.plot(conv_rec_dist)
+plt.xlabel("position")
+plt.ylabel("recombination rate")
+plt.savefig(f"{output_path}{population}_{timestep}.png")
+
+fig = px.line(x=range(len(conv_rec_dist)), y=conv_rec_dist)
+fig.write_html(f"{output_path}{population}_{timestep}.html")

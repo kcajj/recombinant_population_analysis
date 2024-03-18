@@ -117,3 +117,9 @@ that's a good improvement, i wonder how much is the mean time in a random datase
 
 ## 6. compare the results with the results obtained by mafft
 
+
+# whole dataset
+
+minimap2 -ax map-ont results/msa/hybrid_ref.fasta data/population_reads/P2_7.fastq.gz > results/alignments/P2_7.sam
+samtools sort -@ 4 -o results/alignments/P2_7.bam results/alignments/P2_7.sam
+samtools index results/alignments/P2_7.bam results/alignments/P2_7.bam.bai
