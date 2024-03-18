@@ -1,12 +1,11 @@
 from Bio import AlignIO
 import numpy as np
 import matplotlib.pyplot as plt
-from handle_msa import read_msa, get_evidences_distributions, map_refcoord_msacoord
+from handle_msa import read_msa, get_evidences_distributions, map_refcoord_msacoord, add_to_msa
 from viterbi import viterbi_algorithm
 import pysam
 from collections import defaultdict
 import time
-import subprocess
     
 initial_p={"A":0.5,"B":0.5}
 
@@ -34,63 +33,37 @@ if __name__ == "__main__":
     phages={'EM11':0,'EM60':1}
 
     refs_msa_path="results/msa/refs_msa.fasta"
-    maps_refs_msa={}
-    for phage in phages:
-        maps_refs_msa[phage]=map_refcoord_msacoord(f"data/references/{phage}_assembly.fasta",refs_msa_path,i_ref_in_msa=phages[phage])
 
     time_spent=defaultdict(list)
 
-    bam_file=f"data/test/test_{population}_{timestep}.bam"
+    bam_file=f"data/test/hybrid_test_{population}_{timestep}.bam"
 
     c=0
     with pysam.AlignmentFile(bam_file, "rb") as bam:
         for read in bam.fetch():
             if not(read.is_secondary) and not(read.is_supplementary):
 
-                phage=read.reference_name.split('_')[0]
-
-                map_ref_msa=maps_refs_msa[phage]
-
-                temp_fasta_path = f"results/temp/{c}.fasta"
-                temp_total_msa_path = f"results/temp/{population}_{timestep}_{c}_msa.fasta"
-                temp_refs_msa_path = f"results/temp/refs_{population}_{timestep}_{c}_msa.fasta"
-
                 plot_path = f"results/plots/reads/{population}_{timestep}_{c}.png"
 
-                read_sequence=read.query_sequence
+                read_seq = read.query_sequence
+                read_msa_seq = ''
 
-                #find the start and end of mapping. index the ref seuqneces with start and end indexes.
                 mapping_start=read.reference_start
-                mapping_end=read.reference_end-1
-                alignment=AlignIO.read(open(refs_msa_path), "fasta")
-                cut_alignment=alignment[:,map_ref_msa[mapping_start]:map_ref_msa[mapping_end]]
-                AlignIO.write(cut_alignment, temp_refs_msa_path, "fasta")
+                mapping_end=read.reference_end
 
-                # we need to align the read to the refs_msa.fasta file and extract the evidences
                 start_time=time.time()
 
-                # Create a temporary fasta file with the id and sequence of the read
-                with open(temp_fasta_path, "w") as temp_fasta:
-                    temp_fasta.write(f">{read.query_name}\n{read_sequence}\n")
-                    temp_fasta.close()
+                alignment_array = read.get_aligned_pairs()
 
-                # create the alignment
-                msa_command = f"mafft --retree 1 --maxiterate 0 --add {temp_fasta_path} --keeplength {temp_refs_msa_path} > {temp_total_msa_path}"
-                subprocess.run(msa_command, shell=True)
+                for (read_pos,ref_pos) in alignment_array:
+                    if ref_pos!=None:
+                        if read_pos==None:
+                            read_msa_seq+='-'
+                        else:
+                            read_msa_seq+=read_seq[read_pos].lower()
 
-                msa_matrix = read_msa(temp_total_msa_path)
-
-                print()
-                print()
-                print()
-                print(read.query_name)
-                print(mapping_start,mapping_end)
-                print(map_ref_msa[mapping_start],map_ref_msa[mapping_end])
-                print(c)
-                print()
-                print()
-                print()
-
+                msa_matrix = add_to_msa(refs_msa_path, read_msa_seq, mapping_start, mapping_end)
+                
                 e_distribution_to_plot = get_evidences_distributions(msa_matrix)
 
                 e_distribution = np.where(e_distribution_to_plot > 0, e_distribution_to_plot-1, e_distribution_to_plot)
@@ -117,11 +90,8 @@ if __name__ == "__main__":
 
                 hmm_plot.tight_layout()
                 hmm_plot.savefig(plot_path)
-
-                #remove temporary files
-                rm_command = f"rm {temp_fasta_path} {temp_total_msa_path} {temp_refs_msa_path}"
-                subprocess.run(rm_command, shell=True)
-                    
+                
+                print(c)
             c+=1
 
 print("mean time spent")
