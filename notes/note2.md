@@ -21,6 +21,10 @@ Using MAFFT for each read is too slow. We need to use another approach.
 
 2. build the hybrid reference:
 
+## 2. align the recombinant reads to the hybrid reference with minimap2
+
+
+
 ## 6. compare the results with the results obtained by mafft
 
 1. filter the reads to obtain a subset of them that will be used as common testing dataset: test_EM11_new_chemistry.fastq.bgz, test_EM60_new_chemistry.fastq.bgz, test_P2_7.fastq.bgz
@@ -41,3 +45,39 @@ samtools sort -@ 4 -o test/test_P2_7.bam test/test_P2_7.sam
 samtools index test/test_P2_7.bam test/test_P2_7.bam.bai
 
 </pre>
+
+parameters estimation with test dataset:
+
+<pre>
+
+mean null probability
+EM11   0.968531100625019
+EM60   0.9675525481255135
+
+mean a probability
+EM11   0.02994434031592349
+EM60   0.0004993323494807642
+
+mean b probability
+EM11   0.0015245590590574375
+EM60   0.03194811952500564
+
+sum
+EM11: 1.0
+EM60: 0.9999999999999999
+
+mean time spent
+EM11   3.396820112105903
+EM60   5.120701194719504
+
+</pre>
+
+recombination reads run on test datasett:
+
+<pre>
+
+mean time spent
+P2   14.039401678102356
+
+</pre>
+
