@@ -12,7 +12,7 @@ def read_msa(path):
             msa_matrix[i][pos]=nuc
     return msa_matrix
 
-def get_evidences_distributions(msa_matrix,i_ref1,i_ref2,i_extra):
+def get_evidences_distributions(msa_matrix,i_ref1=0,i_ref2=1,i_extra=2):
     l=len(msa_matrix[0])
     e_distribution = np.zeros(l, dtype=int)
 
