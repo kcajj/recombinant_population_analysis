@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     bam_file=f"data/test/hybrid_test_{population}_{timestep}.bam"
 
-    output_path=f"results/plots/genomewide_recombination/"
+    output_path=f"results/plots/genomewide_recombination/test_"
 
     l=length_msa(refs_msa_path)
     recombination_distribution=np.zeros(l,dtype=int)
@@ -47,9 +47,7 @@ if __name__ == "__main__":
     with pysam.AlignmentFile(bam_file, "rb") as bam:
         for read in bam.fetch():
             if not(read.is_secondary) and not(read.is_supplementary):
-
-                plot_path = f"results/plots/reads/{population}_{timestep}_{c}.png"
-
+                
                 read_seq = read.query_sequence
                 read_msa_seq = ''
 
@@ -88,17 +86,17 @@ if __name__ == "__main__":
                 print(c)
             c+=1
 
-print("mean time spent")
-for k,v in time_spent.items():
-    print(k," ",np.mean(v))
-print("")
+    print("mean time spent")
+    for k,v in time_spent.items():
+        print(k," ",np.mean(v))
+    print("")
 
-conv_rec_dist = np.convolve(recombination_distribution, np.ones(100), mode='valid')/100
-plt.figure(figsize=(20, 5))
-plt.plot(conv_rec_dist)
-plt.xlabel("position")
-plt.ylabel("recombination rate")
-plt.savefig(f"{output_path}{population}_{timestep}.png")
+    conv_rec_dist = np.convolve(recombination_distribution, np.ones(100), mode='valid')/100
+    plt.figure(figsize=(20, 5))
+    plt.plot(conv_rec_dist)
+    plt.xlabel("position")
+    plt.ylabel("recombination rate")
+    plt.savefig(f"{output_path}{population}_{timestep}.png")
 
-fig = px.line(x=range(len(conv_rec_dist)), y=conv_rec_dist)
-fig.write_html(f"{output_path}{population}_{timestep}.html")
+    fig = px.line(x=range(len(conv_rec_dist)), y=conv_rec_dist)
+    fig.write_html(f"{output_path}{population}_{timestep}.html")
