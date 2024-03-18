@@ -13,8 +13,8 @@ initial_p={"A":0.5,"B":0.5}
 transition_p_froma={"A":0.999,"B":0.001}
 transition_p_fromb={"A":0.001,"B":0.999}
 
-emission_p_froma={".":0.975,"a":0.024,"b":0.001}
-emission_p_fromb={".":0.975,"a":0.001,"b":0.024}
+emission_p_froma={".":0.974,"a":0.025,"b":0.001}
+emission_p_fromb={".":0.974,"a":0.001,"b":0.025}
 
 ip_np=np.array(list(initial_p.values()))
 tp_np=np.array([list(transition_p_froma.values()),
@@ -56,7 +56,7 @@ if __name__ == "__main__":
                             map_ref_msa=maps_refs_msa[phage]
         
                             temp_fasta_path = f"results/temp/{c}.fasta"
-                            temp_output_path = f"results/temp/{population}_{timestep}_{c}_msa.fasta"
+                            temp_total_msa_path = f"results/temp/{population}_{timestep}_{c}_msa.fasta"
                             temp_refs_msa_path = f"results/temp/refs_{population}_{timestep}_{c}_msa.fasta"
 
                             plot_path = f"results/plots/reads/{population}_{timestep}_{c}.png"
@@ -79,10 +79,10 @@ if __name__ == "__main__":
                                 temp_fasta.close()
 
                             # create the alignment
-                            msa_command = f"mafft --retree 1 --maxiterate 0 --add {temp_fasta_path} --keeplength {temp_refs_msa_path} > {temp_output_path}"
+                            msa_command = f"mafft --retree 1 --maxiterate 0 --add {temp_fasta_path} --keeplength {temp_refs_msa_path} > {temp_total_msa_path}"
                             subprocess.run(msa_command, shell=True)
 
-                            msa_matrix = read_msa(temp_output_path)
+                            msa_matrix = read_msa(temp_total_msa_path)
 
                             print()
                             print()
@@ -90,7 +90,7 @@ if __name__ == "__main__":
                             print(read.query_name)
                             print(mapping_start,mapping_end)
 
-                            e_distribution_to_plot = get_evidences_distributions(msa_matrix,i_ref1=0,i_ref2=1,i_extra=2)
+                            e_distribution_to_plot = get_evidences_distributions(msa_matrix)
 
                             e_distribution = np.where(e_distribution_to_plot > 0, e_distribution_to_plot-1, e_distribution_to_plot)
 
@@ -118,7 +118,7 @@ if __name__ == "__main__":
                             hmm_plot.savefig(plot_path)
 
                             #remove temporary files
-                            rm_command = f"rm {temp_fasta_path} {temp_output_path} {temp_refs_msa_path}"
+                            rm_command = f"rm {temp_fasta_path} {temp_total_msa_path} {temp_refs_msa_path}"
                             subprocess.run(rm_command, shell=True)
                             
                     c+=1

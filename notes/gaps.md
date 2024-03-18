@@ -6,11 +6,11 @@
 
 ## Consider any kind of gap
 
-![all_gaps](../results/plots/clones/wg_P2_C2_msa.png)
+![all_gaps](../notes/images/wg_P2_C2_msa.png)
 
 ## Skip gaps in references
 
-![no_ref_gaps](../results/plots/clones/cg_P2_C2_msa.png)
+![no_ref_gaps](../notes/images/cg_P2_C2_msa.png)
 
 ## More in detail
 
