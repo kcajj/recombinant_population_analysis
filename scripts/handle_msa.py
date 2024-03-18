@@ -50,3 +50,18 @@ def map_refcoord_msacoord(ref_path,refs_msa_path,i_ref_in_msa):
             i+=1
         j+=1
     return map
+
+def add_to_msa(msa_path,seq,mapping_start,mapping_end):
+    alignment = AlignIO.read(open(msa_path), "fasta")
+    l=alignment.get_alignment_length()
+
+    msa_matrix=np.zeros([3,l],dtype=str)
+    for i,record in enumerate(alignment):
+        for pos,nuc in enumerate(record.seq):
+            msa_matrix[i][pos]=nuc
+    
+    cut_msa_matrix=msa_matrix[:,mapping_start:mapping_end]
+    for pos in range(len(cut_msa_matrix[2])):
+        cut_msa_matrix[2][pos]=seq[pos]
+    
+    return cut_msa_matrix
