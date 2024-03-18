@@ -15,7 +15,7 @@
 
     - [ ] parameter estimation
         - [ ] emission probabilities
-            - [ ] reads (analyse the reads of pure phages sequenced, infer the probabilities corresponding to each hidden state)
+            - [x] reads (analyse the reads of pure phages sequenced, infer the probabilities corresponding to each hidden state)
                 - [x] build the msa of each read with the references and keep track of the frequency of evidences
             - [ ] clones
         - [ ] transition probabilities
@@ -37,6 +37,11 @@
             - [ ] we are using the fastest msa method possible. are we making a lot of error?
             - [ ] we are letting MAFFT trim the reads to keep the length of the cut alignment the same. are we trimming a lot?
         - [ ] make the algorithm faster
+            - [] hybrid reference approach
+                - [] create the hybrid reference
+                - [] align the reads to the hybrid reference
+            - [] set up a comparison framework between mafft method and fast method
+                - [] create a subset of 100 reads on which to test the methods
         - [ ] extract and store the recombination data
             - [ ] position of recombination on the reference genome
 
