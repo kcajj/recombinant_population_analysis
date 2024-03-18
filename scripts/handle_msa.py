@@ -65,3 +65,7 @@ def add_to_msa(msa_path,seq,mapping_start,mapping_end):
         cut_msa_matrix[2][pos]=seq[pos]
     
     return cut_msa_matrix
+
+def length_msa(msa_path):
+    alignment = AlignIO.read(open(msa_path), "fasta")
+    return alignment.get_alignment_length()
