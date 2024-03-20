@@ -1,8 +1,5 @@
-import gzip
-from Bio import SeqIO,AlignIO
-from Bio.Seq import Seq
+from Bio import AlignIO
 import numpy as np
-import matplotlib.pyplot as plt
 import subprocess
 from handle_msa import read_msa, get_evidences_distributions, map_refcoord_msacoord
 import time
@@ -31,7 +28,7 @@ for phage in phages:
     c = 0
     with pysam.AlignmentFile(bam_file, "rb") as bam:
         for read in bam.fetch():
-            if not(read.is_secondary) and not(read.is_supplementary):
+            if not(read.is_secondary):
 
                 read_sequence=read.query_sequence
 

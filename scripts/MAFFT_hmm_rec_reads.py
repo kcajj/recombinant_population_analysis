@@ -1,13 +1,12 @@
 from Bio import AlignIO
 import numpy as np
-import matplotlib.pyplot as plt
-from handle_msa import read_msa, get_evidences_distributions, map_refcoord_msacoord
+from handle_msa import read_msa, get_evidences_distributions, map_refcoord_msacoord, length_msa
 from viterbi import viterbi_algorithm
 import pysam
 from collections import defaultdict
 import time
 import subprocess
-    
+
 initial_p={"A":0.5,"B":0.5}
 
 transition_p_froma={"A":0.999,"B":0.001}
@@ -42,10 +41,15 @@ if __name__ == "__main__":
 
     bam_file=f"data/test/test_{population}_{timestep}.bam"
 
+    output_path = f"results/genomewide_recombination_arrays/MAFFT_test_{population}_{timestep}.npz"
+
+    l=length_msa(refs_msa_path)
+    recombination_distribution=np.zeros(l,dtype=int)
+
     c=0
     with pysam.AlignmentFile(bam_file, "rb") as bam:
         for read in bam.fetch():
-            if not(read.is_secondary) and not(read.is_supplementary):
+            if not(read.is_secondary):
 
                 phage=read.reference_name.split('_')[0]
 
@@ -54,8 +58,6 @@ if __name__ == "__main__":
                 temp_fasta_path = f"results/temp/{c}.fasta"
                 temp_total_msa_path = f"results/temp/{population}_{timestep}_{c}_msa.fasta"
                 temp_refs_msa_path = f"results/temp/refs_{population}_{timestep}_{c}_msa.fasta"
-
-                plot_path = f"results/plots/MAFFT_reads/{population}_{timestep}_{c}.png"
 
                 read_sequence=read.query_sequence
 
@@ -79,51 +81,33 @@ if __name__ == "__main__":
 
                 msa_matrix = read_msa(temp_total_msa_path)
 
-                print()
-                print()
-                print()
-                print(read.query_name)
-                print(mapping_start,mapping_end)
-                print(map_ref_msa[mapping_start],map_ref_msa[mapping_end])
-                print(c)
-                print()
-                print()
-                print()
-
                 e_distribution_to_plot = get_evidences_distributions(msa_matrix)
 
                 e_distribution = np.where(e_distribution_to_plot > 0, e_distribution_to_plot-1, e_distribution_to_plot)
 
                 hmm_prediction = viterbi_algorithm(e_distribution, tp_np, ep_np, ip_np)
+                
+                pre_status = hmm_prediction[0]
+                for i in range(len(hmm_prediction)):
+                    post_status = hmm_prediction[i]
+                    if pre_status != post_status:
+                        recombination_distribution[i] += 1
+                    pre_status = post_status
 
                 end_time=time.time()
                 time_spent[population].append(end_time-start_time)
 
-                hmm_plot, (evidences, prediction) = plt.subplots(2, 1, figsize=(10, 5))
-                hmm_plot.suptitle(f'HMM read {c}, {population}, t{timestep}')
-
-                colours = np.where(e_distribution_to_plot == 0, "green", np.where(e_distribution_to_plot == 1, "red", np.where(e_distribution_to_plot == 2, "orange", "blue")))
-                evidences.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), e_distribution_to_plot, c=colours, marker='|', alpha=0.5)
-                evidences.set_title('evidence distribution (0:same, 1:err, 2:a, 3:b)')
-                evidences.set_xlabel("basepair")
-                evidences.set_ylabel("visible states")
-
-                colours = np.where(hmm_prediction == 0, "orange", "blue")
-                prediction.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), hmm_prediction, c=colours, marker='|', alpha=0.5)
-                prediction.set_title(f'HMM prediction (0:A, 1:B)')
-                prediction.set_xlabel("basepair")
-                prediction.set_ylabel("hidden states")
-
-                hmm_plot.tight_layout()
-                hmm_plot.savefig(plot_path)
-
                 #remove temporary files
                 rm_command = f"rm {temp_fasta_path} {temp_total_msa_path} {temp_refs_msa_path}"
                 subprocess.run(rm_command, shell=True)
-                    
+
+                print(c)
+                
             c+=1
 
-print("mean time spent")
-for k,v in time_spent.items():
-    print(k," ",np.mean(v))
-print("")
+    print("mean time spent")
+    for k,v in time_spent.items():
+        print(k," ",np.mean(v))
+    print("")
+
+    np.savez(output_path,recombination_distribution)
