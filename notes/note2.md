@@ -37,24 +37,24 @@ parameters estimation with test dataset:
 <pre>
 
 mean null probability
-EM11   0.968531100625019
-EM60   0.9675525481255135
+EM11   0.967892723956481
+EM60   0.9679468350646898
 
 mean a probability
-EM11   0.02994434031592349
-EM60   0.0004993323494807642
+EM11   0.027694027601184522
+EM60   0.0008853449723399029
 
 mean b probability
-EM11   0.0015245590590574375
-EM60   0.03194811952500564
+EM11   0.0044132484423344415
+EM60   0.031167819962970477
 
 sum
 EM11: 1.0
-EM60: 0.9999999999999999
+EM60: 1.0000000000000002
 
 mean time spent
-EM11   3.396820112105903
-EM60   5.120701194719504
+EM11   2.401213432613172
+EM60   5.300837469427553
 
 </pre>
 
@@ -63,14 +63,11 @@ recombination reads run on test datasett:
 <pre>
 
 mean time spent
-P2   14.039401678102356
+P2   5.116986224410731
 
 </pre>
 
 BIG BIG BIG BIG BIG PROBLEM: THIS TIME CONSIDERS ALSO THE TIME USED BY THE VITERBI ALGORITHM
-
-the actual time required for MAFFT is 5.748953744769096
-
 
 ## 1. build a hibyrid reference from the MSA
 
@@ -113,9 +110,20 @@ P2   5.394195290548461
 
 </pre>
 
-that's a good improvement, i wonder how much is the mean time in a random dataset
+that's a good improvement, i wonder how much is the mean time in a random dataset (i tried and it is 0.15)
 
 ## 6. compare the results with the results obtained by mafft
+
+We will compare the genome wide recombination:
+
+MAFFT
+mean time spent
+P2   5.116986224410731
+img:
+
+hybrid ref:
+1.8665060363374315
+img:
 
 
 # whole dataset
@@ -123,3 +131,4 @@ that's a good improvement, i wonder how much is the mean time in a random datase
 minimap2 -ax map-ont results/msa/hybrid_ref.fasta data/population_reads/P2_7.fastq.gz > results/alignments/P2_7.sam
 samtools sort -@ 4 -o results/alignments/P2_7.bam results/alignments/P2_7.sam
 samtools index results/alignments/P2_7.bam results/alignments/P2_7.bam.bai
+
