@@ -6,6 +6,7 @@ import pysam
 from collections import defaultdict
 import time
 import subprocess
+import matplotlib.pyplot as plt
 
 initial_p={"A":0.5,"B":0.5}
 
@@ -39,9 +40,9 @@ if __name__ == "__main__":
 
     time_spent=defaultdict(list)
 
-    bam_file=f"data/test/test_{population}_{timestep}.bam"
+    bam_file=f"data/test/test_{population}_{timestep}.bam" #for test dataset
 
-    output_path = f"results/genomewide_recombination_arrays/MAFFT_test_{population}_{timestep}.npz"
+    output_path = f"results/genomewide_recombination_arrays/MAFFT_test_{population}_{timestep}.npz" #for test dataset
 
     l=length_msa(refs_msa_path)
     recombination_distribution=np.zeros(l,dtype=int)
@@ -100,8 +101,30 @@ if __name__ == "__main__":
                 #remove temporary files
                 rm_command = f"rm {temp_fasta_path} {temp_total_msa_path} {temp_refs_msa_path}"
                 subprocess.run(rm_command, shell=True)
-
+                
                 print(c)
+                
+                '''
+                plot_path = f"results/plots/MAFFT_reads/{population}_{timestep}_{c}.png"
+
+                hmm_plot, (evidences, prediction) = plt.subplots(2, 1, figsize=(10, 5))
+                hmm_plot.suptitle(f'HMM read {c}, {population}, t{timestep}')
+
+                colours = np.where(e_distribution_to_plot == 0, "green", np.where(e_distribution_to_plot == 1, "red", np.where(e_distribution_to_plot == 2, "orange", "blue")))
+                evidences.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), e_distribution_to_plot, c=colours, marker='|', alpha=0.5)
+                evidences.set_title('evidence distribution (0:same, 1:err, 2:a, 3:b)')
+                evidences.set_xlabel("basepair")
+                evidences.set_ylabel("visible states")
+
+                colours = np.where(hmm_prediction == 0, "orange", "blue")
+                prediction.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), hmm_prediction, c=colours, marker='|', alpha=0.5)
+                prediction.set_title(f'HMM prediction (0:A, 1:B)')
+                prediction.set_xlabel("basepair")
+                prediction.set_ylabel("hidden states")
+
+                hmm_plot.tight_layout()
+                hmm_plot.savefig(plot_path)
+                '''
                 
             c+=1
 

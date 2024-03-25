@@ -17,7 +17,7 @@ time_spent=defaultdict(list)
 
 for phage in phages:
 
-    bam_file=f"data/test/test_{phage}_new_chemistry.bam"
+    bam_file=f"data/test/test_{phage}_new_chemistry.bam" #for test dataset
     
     map_ref_msa=map_refcoord_msacoord(f"data/references/{phage}_assembly.fasta",refs_msa_path,i_ref_in_msa=phages[phage])
     

@@ -185,7 +185,7 @@ samtools sort -@ 4 -o results/alignments/P2_7.bam results/alignments/P2_7.sam
 samtools index results/alignments/P2_7.bam results/alignments/P2_7.bam.bai
 
 minimap2 -ax map-ont results/msa/hybrid_ref.fasta data/pure_reads/EM11_new_chemistry.fastq.gz > data/test/hybrid_test_EM11_new_chemistry.sam
-samtools sort -@ 4 -o data/test/hybrid_test_EM11_new_chemistry.bam data/test/hybrid_test_EM11_new_chemistry.sam
+samtools sort -@ 4 -o dacta/test/hybrid_test_EM11_new_chemistry.bam data/test/hybrid_test_EM11_new_chemistry.sam
 samtools index data/test/hybrid_test_EM11_new_chemistry.bam data/test/hybrid_test_EM11_new_chemistry.bam.bai
 
 minimap2 -ax map-ont results/msa/hybrid_ref.fasta data/pure_reads/EM60_new_chemistry.fastq.gz > data/test/hybrid_test_EM60_new_chemistry.sam
@@ -194,7 +194,24 @@ samtools index data/test/hybrid_test_EM60_new_chemistry.bam data/test/hybrid_tes
 
 </pre>
 
-it's hard to estimate how much time will it take, even with a threshold.
+we run hmm_rec_reads.py on the whole dataset. i want to see if the result is cool. then we will decide if and how to speed up the process.
 
-maybe we can implement a mean time spent by base.
+i will put a threshold of 5kb of read length. this means that we will analyse 30% of reads and 70% of the total information in terms of mapped bases.
+
+this is the result:
+
+<pre>
+
+mean time spent (per read and per base)
+P2   0.42962472400840623
+P2   3.931504231066367e-05
+total reads 250355
+reads used 68314
+total time 29375.085064888
+
+</pre>
+
+img:
+
+![rec_whole_dataset](../results/plots/genomewide_recombination/P2_7.png)
 
