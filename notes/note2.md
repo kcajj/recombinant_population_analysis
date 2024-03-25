@@ -142,6 +142,8 @@ img:
 
 ### we can do the same thing for parameter estimation
 
+<pre>
+
 minimap2 -ax map-ont results/msa/hybrid_ref.fasta data/test/test_EM11_new_chemistry.fastq.bgz > data/test/hybrid_test_EM11_new_chemistry.sam
 samtools sort -@ 4 -o data/test/hybrid_test_EM11_new_chemistry.bam data/test/hybrid_test_EM11_new_chemistry.sam
 samtools index data/test/hybrid_test_EM11_new_chemistry.bam data/test/hybrid_test_EM11_new_chemistry.bam.bai
@@ -149,6 +151,8 @@ samtools index data/test/hybrid_test_EM11_new_chemistry.bam data/test/hybrid_tes
 minimap2 -ax map-ont results/msa/hybrid_ref.fasta data/test/test_EM60_new_chemistry.fastq.bgz > data/test/hybrid_test_EM60_new_chemistry.sam
 samtools sort -@ 4 -o data/test/hybrid_test_EM60_new_chemistry.bam data/test/hybrid_test_EM60_new_chemistry.sam
 samtools index data/test/hybrid_test_EM60_new_chemistry.bam data/test/hybrid_test_EM60_new_chemistry.bam.bai
+
+</pre>
 
 <pre>
 hybrid reference                    MAFFT
@@ -172,6 +176,10 @@ EM60   0.20331921707205222          5.300837469427553
 
 # whole dataset
 
+align all the reads on the hybrid reference.
+
+<pre>
+
 minimap2 -ax map-ont results/msa/hybrid_ref.fasta data/population_reads/P2_7.fastq.gz > results/alignments/P2_7.sam
 samtools sort -@ 4 -o results/alignments/P2_7.bam results/alignments/P2_7.sam
 samtools index results/alignments/P2_7.bam results/alignments/P2_7.bam.bai
@@ -183,6 +191,8 @@ samtools index data/test/hybrid_test_EM11_new_chemistry.bam data/test/hybrid_tes
 minimap2 -ax map-ont results/msa/hybrid_ref.fasta data/pure_reads/EM60_new_chemistry.fastq.gz > data/test/hybrid_test_EM60_new_chemistry.sam
 samtools sort -@ 4 -o data/test/hybrid_test_EM60_new_chemistry.bam data/test/hybrid_test_EM60_new_chemistry.sam
 samtools index data/test/hybrid_test_EM60_new_chemistry.bam data/test/hybrid_test_EM60_new_chemistry.bam.bai
+
+</pre>
 
 it's hard to estimate how much time will it take, even with a threshold.
 
