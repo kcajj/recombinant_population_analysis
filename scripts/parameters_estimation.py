@@ -17,7 +17,7 @@ time_spent=defaultdict(list)
 
 for phage in phages:
 
-    bam_file=f"data/test/hybrid_test_{phage}_new_chemistry.bam"
+    bam_file=f"data/test/hybrid_test_{phage}_new_chemistry.bam" #for test dataset
     
     c = 0
     with pysam.AlignmentFile(bam_file, "rb") as bam:

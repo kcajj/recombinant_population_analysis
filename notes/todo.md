@@ -27,7 +27,7 @@
     - [x] gaps
         - [x] what happens if we don't consider gaps
         - [x] what happens if we consider gaps
-        - [x] what is the best option?
+        - [x] what is the best option? do not consider gaps
 
     - [ ] running on the whole dataset
         - [ ] script to build msa of each read with references and analyse it
@@ -37,12 +37,24 @@
             - [ ] we are using the fastest msa method possible. are we making a lot of error?
             - [ ] we are letting MAFFT trim the reads to keep the length of the cut alignment the same. are we trimming a lot?
         - [ ] make the algorithm faster
-            - [] hybrid reference approach
-                - [] create the hybrid reference
-                - [] align the reads to the hybrid reference
-            - [] set up a comparison framework between mafft method and fast method
-                - [] create a subset of 100 reads on which to test the methods
-        - [ ] extract and store the recombination data
-            - [ ] position of recombination on the reference genome
+            - [x] hybrid reference approach
+                - [x] create the hybrid reference
+                - [x] align the reads to the hybrid reference
+                - [x] build the msa starting from minimap alignment (use method .get_aligned_pairs())
+                - [x] extract the evidences with the msa and make the prediction with the viterbi algorithm
+            - [x] set up a comparison framework between mafft method and fast method
+                - [x] create a subset of 100 reads on which to test the methods
+                    - [x] reads
+                    - [x] parameter estimation
+                - [x] run the two methods on the test set and see the differences
+                    - [x] reads
+                    - [x] parameter estimation
+            - [ ] run on the whole dataset
+                - [x] reads
+                    - [x] set up a read_length threshold to make the algorithm faster
+                - [ ] parameter estimation
+        - [x] extract and store the recombination data
+            - [x] array with position of recombination events in the reference genome
+            - [x] plot the whole genome recombination
 
 - [ ] representing whole-population recombination data

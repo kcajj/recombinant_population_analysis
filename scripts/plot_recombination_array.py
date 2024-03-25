@@ -1,8 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import plotly.express as px
+import pysam
 
 if __name__ == "__main__":
+    bam_file = 'results/alignments/P2_7.bam'
+    #bam_file = 'data/test/hybrid_test_P2_7.bam'
+    imported = pysam.AlignmentFile(bam_file, mode = 'rb')  # 'rb' ~ read bam
+    coverage_arrays = imported.count_coverage("hybrid_ref")
+    coverage=np.zeros(len(coverage_arrays[0]))
+    for i in range(len(coverage_arrays[0])):
+        for j in range(4):
+            coverage[i]+=coverage_arrays[j][i]
+
     population="P2"
     timestep="7"
 
@@ -17,12 +27,21 @@ if __name__ == "__main__":
     for item in lst:
         recombination_distribution=npz[item]
 
-    conv_rec_dist = np.convolve(recombination_distribution, np.ones(100), mode='valid')/100
+    conv_rec_dist = recombination_distribution/coverage
     plt.figure(figsize=(20, 5))
     plt.plot(conv_rec_dist)
     plt.xlabel("position")
     plt.ylabel("recombination rate")
-    plt.savefig(f"{output_path}{population}_{timestep}.png")
+    plt.savefig(f"{output_path}{population}_{timestep}_normalised_for_coverage.png")
 
     fig = px.line(x=range(len(conv_rec_dist)), y=conv_rec_dist)
+    fig.write_html(f"{output_path}{population}_{timestep}_normalised_for_coverage.html")
+
+    plt.figure(figsize=(20, 5))
+    plt.plot(recombination_distribution)
+    plt.xlabel("position")
+    plt.ylabel("recombination rate")
+    plt.savefig(f"{output_path}{population}_{timestep}.png")
+
+    fig = px.line(x=range(len(recombination_distribution)), y=recombination_distribution)
     fig.write_html(f"{output_path}{population}_{timestep}.html")
