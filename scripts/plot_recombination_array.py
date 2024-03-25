@@ -6,11 +6,11 @@ if __name__ == "__main__":
     population="P2"
     timestep="7"
 
-    #input_path=f"results/genomewide_recombination_arrays/test_{population}_{timestep}.npz"
-    input_path=f"results/genomewide_recombination_arrays/MAFFT_test_{population}_{timestep}.npz"
+    input_path=f"results/genomewide_recombination_arrays/{population}_{timestep}.npz"
+    #input_path=f"results/genomewide_recombination_arrays/MAFFT_test_{population}_{timestep}.npz"
 
-    #output_path="results/plots/genomewide_recombination/test_"
-    output_path="results/plots/genomewide_recombination/MAFFT_test_"
+    output_path="results/plots/genomewide_recombination/"
+    #output_path="results/plots/genomewide_recombination/MAFFT_test_"
 
     npz=np.load(input_path)
     lst=npz.files
