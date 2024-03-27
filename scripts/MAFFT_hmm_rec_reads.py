@@ -38,16 +38,18 @@ if __name__ == "__main__":
     for phage in phages:
         maps_refs_msa[phage]=map_refcoord_msacoord(f"data/references/{phage}_assembly.fasta",refs_msa_path,i_ref_in_msa=phages[phage])
 
-    time_spent=defaultdict(list)
-
     bam_file=f"data/test/test_{population}_{timestep}.bam" #for test dataset
 
     output_path = f"results/genomewide_recombination_arrays/MAFFT_test_{population}_{timestep}.npz" #for test dataset
 
-    l=length_msa(refs_msa_path)
-    recombination_distribution=np.zeros(l,dtype=int)
+    l_msa=length_msa(refs_msa_path)
+    recombination_distribution=np.zeros(l_msa,dtype=int)
 
+    time_spent_per_read=defaultdict(list)
+    time_spent_per_base=defaultdict(list)
+    tot_t_start=time.time()
     c=0
+    c1=0
     with pysam.AlignmentFile(bam_file, "rb") as bam:
         for read in bam.fetch():
             if not(read.is_secondary):
@@ -77,7 +79,8 @@ if __name__ == "__main__":
                     temp_fasta.close()
 
                 # create the alignment
-                msa_command = f"mafft --retree 1 --maxiterate 0 --add {temp_fasta_path} --keeplength {temp_refs_msa_path} > {temp_total_msa_path}"
+                msa_command = f"mafft --auto --add {temp_fasta_path} --keeplength {temp_refs_msa_path} > {temp_total_msa_path}"
+                #msa_command = f"mafft --retree 1 --maxiterate 0 --add {temp_fasta_path} --keeplength {temp_refs_msa_path} > {temp_total_msa_path}"#fastest options
                 subprocess.run(msa_command, shell=True)
 
                 msa_matrix = read_msa(temp_total_msa_path)
@@ -92,18 +95,20 @@ if __name__ == "__main__":
                 for i in range(len(hmm_prediction)):
                     post_status = hmm_prediction[i]
                     if pre_status != post_status:
-                        recombination_distribution[i] += 1
+                        recombination_distribution[mapping_start+i] += 1
                     pre_status = post_status
 
                 end_time=time.time()
-                time_spent[population].append(end_time-start_time)
+                time_spent_per_read[population].append(end_time-start_time)
+                time_spent_per_base[population].append((end_time-start_time)/len(hmm_prediction))
 
                 #remove temporary files
                 rm_command = f"rm {temp_fasta_path} {temp_total_msa_path} {temp_refs_msa_path}"
                 subprocess.run(rm_command, shell=True)
                 
                 print(c)
-                
+                c1+=1
+
                 '''
                 plot_path = f"results/plots/MAFFT_reads/{population}_{timestep}_{c}.png"
 
@@ -124,13 +129,21 @@ if __name__ == "__main__":
 
                 hmm_plot.tight_layout()
                 hmm_plot.savefig(plot_path)
+                plt.close(hmm_plot)
                 '''
                 
             c+=1
 
-    print("mean time spent")
-    for k,v in time_spent.items():
+    print("mean time spent (per read and per base)")
+    for k,v in time_spent_per_read.items():
         print(k," ",np.mean(v))
-    print("")
+    for k,v in time_spent_per_base.items():
+        print(k," ",np.mean(v))
+    print("total reads", c)
+    print("reads used", c1)
 
     np.savez(output_path,recombination_distribution)
+
+    tot_t_finish=time.time()
+    tot_t=tot_t_finish-tot_t_start
+    print("total time", tot_t)
