@@ -16,8 +16,9 @@ if __name__ == "__main__":
     #np.savez("data/test/coverage_tot.npz",coverage)
     np.savez("data/test/coverage_test.npz",coverage)
     '''
-    #npz=np.load("data/test/coverage_tot.npz")
-    npz=np.load("data/test/coverage_test.npz")
+    
+    npz=np.load("data/test/coverage_tot.npz")
+    #npz=np.load("data/test/coverage_test.npz")
     lst=npz.files
     for item in lst:
         coverage=npz[item]
@@ -25,12 +26,12 @@ if __name__ == "__main__":
     population="P2"
     timestep="7"
 
-    #input_path=f"results/genomewide_recombination_arrays/{population}_{timestep}.npz"
-    input_path=f"results/genomewide_recombination_arrays/test_{population}_{timestep}.npz"
+    input_path=f"results/genomewide_recombination_arrays/{population}_{timestep}.npz"
+    #input_path=f"results/genomewide_recombination_arrays/test_{population}_{timestep}.npz"
     #input_path=f"results/genomewide_recombination_arrays/MAFFT_test_{population}_{timestep}.npz"
 
-    #output_path="results/plots/genomewide_recombination/"
-    output_path="results/plots/genomewide_recombination/test_"
+    output_path="results/plots/genomewide_recombination/"
+    #output_path="results/plots/genomewide_recombination/test_"
     #output_path="results/plots/genomewide_recombination/MAFFT_test_"
 
     npz=np.load(input_path)
@@ -38,14 +39,14 @@ if __name__ == "__main__":
     for item in lst:
         recombination_distribution=npz[item]
 
-    conv_rec_dist = recombination_distribution/coverage
+    norm_rec_dist = recombination_distribution/coverage
     plt.figure(figsize=(20, 5))
-    plt.plot(conv_rec_dist)
+    plt.plot(norm_rec_dist)
     plt.xlabel("position")
     plt.ylabel("recombination rate")
     plt.savefig(f"{output_path}{population}_{timestep}_normalised_for_coverage.png")
 
-    fig = px.line(x=range(len(conv_rec_dist)), y=conv_rec_dist)
+    fig = px.line(x=range(len(norm_rec_dist)), y=norm_rec_dist)
     fig.write_html(f"{output_path}{population}_{timestep}_normalised_for_coverage.html")
 
     plt.figure(figsize=(20, 5))

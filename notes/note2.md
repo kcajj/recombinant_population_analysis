@@ -64,8 +64,12 @@ recombination reads run on test datasett:
 
 <pre>
 
-mean time spent
-P2   5.116986224410731
+mean time spent (per read and per base)
+P2   4.327918840110849
+P2   0.0002670344474164654
+total reads 310
+reads used 218
+total time 945.3692042827606
 
 </pre>
 
@@ -109,36 +113,74 @@ the time required to analyse each read of the test set alignment is:
 
 <pre>
 
-mean time spent
-P2   1.8665060363374315
+mean time spent (per read and per base)
+P2   1.6704628843444962
+P2   7.103318282339456e-05
+total reads 223
+reads used 222
+total time 443.5385274887085
 
 </pre>
 
-that's a good improvement, i wonder how much is the mean time in a random dataset (i tried and it is 0.15)
+that's a good improvement, even though the performance is still not the best.
 
 ## 6. compare the results with the results obtained by mafft
 
 We will compare the genome wide recombination:
 
 <pre>
+
 MAFFT:
-mean time spent
-P2   5.116986224410731
+mean time spent (per read and per base)
+P2   4.327918840110849
+P2   0.0002670344474164654
+total reads 310
+reads used 218
+total time 945.3692042827606
+
+</pre>
+
+img:
+
+![MAFFT_first_try](images/MAFFT_first_try.png)
+
+<pre>
+
+hybrid ref:
+mean time spent (per read and per base)
+P2   1.6704628843444962
+P2   7.103318282339456e-05
+total reads 223
+reads used 222
+total time 443.5385274887085
+
+</pre>
+
+img:
+
+![rec](../results/plots/genomewide_recombination/test_P2_7.png)
+
+there are differences. the result from the hybrid reference approach seems to have better signal.
+
+maybe this is due to the MAFFT command, i will try to use the automatic options:
+
+<pre>
+
+MAFFT:
+mean time spent (per read and per base)
+P2   8.35179340511287
+P2   0.0004729846803596409
+total reads 310
+reads used 218
+total time 1823.0863628387451
+
 </pre>
 
 img:
 
 ![MAFFT_rec](../results/plots/genomewide_recombination/MAFFT_test_P2_7.png)
 
-<pre>
-hybrid ref:
-mean time spent
-P2  1.8665060363374315
-</pre>
-
-img:
-
-![rec](../results/plots/genomewide_recombination/test_P2_7.png)
+no improvements. maybe we cannot trust mafft (used in the way we are using it) as much as we trust minimap2.
 
 ### we can do the same thing for parameter estimation
 
@@ -155,6 +197,7 @@ samtools index data/test/hybrid_test_EM60_new_chemistry.bam data/test/hybrid_tes
 </pre>
 
 <pre>
+
 hybrid reference                    MAFFT
 mean null probability
 EM11   0.9662429815268376           0.967892723956481
@@ -215,3 +258,6 @@ img:
 
 ![rec_whole_dataset](../results/plots/genomewide_recombination/P2_7.png)
 
+there seem to be 4 recombination hotspots
+
+we can try to normalise for the coverage
