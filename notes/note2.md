@@ -246,11 +246,11 @@ this is the result:
 <pre>
 
 mean time spent (per read and per base)
-P2   0.42962472400840623
-P2   3.931504231066367e-05
+P2   0.3613691231787451
+P2   3.102784908542215e-05
 total reads 250355
-reads used 68314
-total time 29375.085064888
+reads used 67274
+total time 24346.091243982315
 
 </pre>
 
