@@ -258,6 +258,6 @@ img:
 
 ![rec_whole_dataset](../results/plots/genomewide_recombination/P2_7.png)
 
-there seem to be 4 recombination hotspots
-
 we can try to normalise for the coverage
+
+![rec_whole_dataset_normalised](../results/plots/genomewide_recombination/P2_7_normalised_for_coverage.png)

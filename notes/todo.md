@@ -1,8 +1,8 @@
 - [ ] finding recombinant reads
 
-    - [ ] viterbi algorithm
+    - [x] viterbi algorithm
         - [x] generate data on the basis of given probabilities
-        - [ ] understand viterbi script deeply
+        - [x] understand viterbi script deeply
         - [x] make predictions on that data
 
     - [x] test on Aionostat data
@@ -30,12 +30,12 @@
         - [x] what is the best option? do not consider gaps
 
     - [ ] running on the whole dataset
-        - [ ] script to build msa of each read with references and analyse it
+        - [x] script to build msa of each read with references (using MAFFT) and analyse it
             - [x] map the reference index to the msa index
             - [x] cut the msa
             - [x] add the read to the msa
-            - [ ] we are using the fastest msa method possible. are we making a lot of error?
-            - [ ] we are letting MAFFT trim the reads to keep the length of the cut alignment the same. are we trimming a lot?
+            - [x] we are using the fastest msa method possible. are we making a lot of error? probably yes
+            - [x] we are letting MAFFT trim the reads to keep the length of the cut alignment the same. are we trimming a lot? we don't care
         - [ ] make the algorithm faster
             - [x] hybrid reference approach
                 - [x] create the hybrid reference
