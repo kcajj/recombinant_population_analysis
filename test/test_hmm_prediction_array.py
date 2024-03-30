@@ -1,15 +1,16 @@
 import numpy as np
 from handle_msa import length_msa
 from viterbi import viterbi_algorithm
-from collections import defaultdict
 import time
 import csv
 import sys
+from multiprocessing import Pool
+from itertools import repeat
 
 initial_p={"A":0.5,"B":0.5}
 
-transition_p_froma={"A":0.9999,"B":0.0001}
-transition_p_fromb={"A":0.0001,"B":0.9999}
+transition_p_froma={"A":0.999,"B":0.001}
+transition_p_fromb={"A":0.001,"B":0.999}
 
 emission_p_froma={".":0.969,"a":0.03,"b":0.001}
 emission_p_fromb={".":0.969,"a":0.001,"b":0.03}
@@ -25,6 +26,8 @@ if __name__ == "__main__":
     population='P2'
     timestep='7'
 
+    cores=4
+
     refs_msa_path="results/msa/refs_msa.fasta"
 
     evidence_file=f"results/evidence_arrays/test_{population}_{timestep}.tsv" #for test dataset
@@ -38,8 +41,9 @@ if __name__ == "__main__":
 
     csv.field_size_limit(sys.maxsize)
 
-    time_spent_per_read=defaultdict(list)
-    time_spent_per_base=defaultdict(list)
+    evidence_arrays=[]
+    mapping_starts=[]
+
     tot_t_start=time.time()
     c=0
     with open(evidence_file) as file:
@@ -51,32 +55,26 @@ if __name__ == "__main__":
             evidence_array_str=line[2][1:-1].replace("\n","").split(" ")
             evidence_array=np.array([int(e) for e in evidence_array_str])
 
-            start_time=time.time()
-
-            hmm_prediction,log_lik = viterbi_algorithm(evidence_array, tp_np, ep_np, ip_np)
-
-            tot_log_lik+=log_lik
-
-            pre_status = hmm_prediction[0]
-            for i in range(len(hmm_prediction)):
-                post_status = hmm_prediction[i]
-                if pre_status != post_status:
-                    recombination_distribution[mapping_start+i] += 1
-                pre_status = post_status
-
-            end_time=time.time()
-            time_spent_per_read[population].append(end_time-start_time)
-            time_spent_per_base[population].append((end_time-start_time)/len(hmm_prediction))
-
-            print(c)
-            print("log likelihood",log_lik)
+            evidence_arrays.append(evidence_array)
+            mapping_starts.append(mapping_start)
             c+=1
 
-    print("mean time spent (per read and per base)")
-    for k,v in time_spent_per_read.items():
-        print(k," ",np.mean(v))
-    for k,v in time_spent_per_base.items():
-        print(k," ",np.mean(v))
+    with Pool(cores) as p:
+        results = p.starmap(viterbi_algorithm, zip(evidence_arrays, repeat(tp_np), repeat(ep_np), repeat(ip_np)))
+
+    for i in range(len(results)):
+        hmm_prediction = results[i][0]
+        log_lik = results[i][1]
+        mapping_start = mapping_starts[i]
+
+        tot_log_lik+=log_lik
+
+        pre_status = hmm_prediction[0]
+        for i in range(len(hmm_prediction)):
+            post_status = hmm_prediction[i]
+            if pre_status != post_status:
+                recombination_distribution[mapping_start+i] += 1
+            pre_status = post_status
 
     print("total log likelihood",tot_log_lik)
 
@@ -85,3 +83,5 @@ if __name__ == "__main__":
     tot_t_finish=time.time()
     tot_t=tot_t_finish-tot_t_start
     print("total time", tot_t)
+    print("total reads", c)
+    print("time per read", tot_t/c)
