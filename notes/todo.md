@@ -55,6 +55,6 @@
                 - [ ] parameter estimation
         - [x] extract and store the recombination data
             - [x] array with position of recombination events in the reference genome
-            - [x] plot the whole genome recombination
+    - [x] representing whole-population recombination data
 
-- [ ] representing whole-population recombination data
+- [ ] pipeline

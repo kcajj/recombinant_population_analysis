@@ -29,17 +29,13 @@ if __name__ == "__main__":
     population='P2'
     timestep='7'
 
-    phages={'EM11':0,'EM60':1}
-
     refs_msa_path="results/msa/refs_msa.fasta"
 
     bam_file=f"results/alignments/{population}_{timestep}.bam"
-    #bam_file=f"data/test/hybrid_test_{population}_{timestep}.bam" #for test dataset
 
     output_path=f"results/genomewide_recombination_arrays/{population}_{timestep}.npz"
-    #output_path=f"results/genomewide_recombination_arrays/test_{population}_{timestep}.npz" #for test dataset
 
-    length_treshold=5000 #just for the total dataset
+    length_treshold=5000
 
     l_msa=length_msa(refs_msa_path)
     recombination_distribution=np.zeros(l_msa,dtype=int)
@@ -94,30 +90,6 @@ if __name__ == "__main__":
 
                     print(c)
                     c1+=1
-
-                    '''
-                    #to create a plot for each read
-                    plot_path = f"results/plots/reads/{population}_{timestep}_{c}.png"
-
-                    hmm_plot, (evidences, prediction) = plt.subplots(2, 1, figsize=(10, 5))
-                    hmm_plot.suptitle(f'HMM read {c}, {population}, t{timestep}')
-
-                    colours = np.where(e_distribution_to_plot == 0, "green", np.where(e_distribution_to_plot == 1, "red", np.where(e_distribution_to_plot == 2, "orange", "blue")))
-                    evidences.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), e_distribution_to_plot, c=colours, marker='|', alpha=0.5)
-                    evidences.set_title('evidence distribution (0:same, 1:err, 2:a, 3:b)')
-                    evidences.set_xlabel("basepair")
-                    evidences.set_ylabel("visible states")
-
-                    colours = np.where(hmm_prediction == 0, "orange", "blue")
-                    prediction.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), hmm_prediction, c=colours, marker='|', alpha=0.5)
-                    prediction.set_title(f'HMM prediction (0:A, 1:B)')
-                    prediction.set_xlabel("basepair")
-                    prediction.set_ylabel("hidden states")
-
-                    hmm_plot.tight_layout()
-                    hmm_plot.savefig(plot_path)
-                    plt.close(hmm_plot)
-                    '''
 
             c+=1
             if c%1000==0:

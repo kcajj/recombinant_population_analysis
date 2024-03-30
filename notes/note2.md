@@ -178,9 +178,13 @@ total time 1823.0863628387451
 
 img:
 
-![MAFFT_rec](../results/plots/genomewide_recombination/MAFFT_test_P2_7.png)
+![MAFFT_second_try](images/MAFFT_second_try.png)
 
 no improvements. maybe we cannot trust mafft (used in the way we are using it) as much as we trust minimap2.
+
+the number of recombination events is the same in the two arrays: 178.
+
+
 
 ### we can do the same thing for parameter estimation
 
