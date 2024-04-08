@@ -10,11 +10,11 @@ import matplotlib.pyplot as plt
 
 initial_p={"A":0.5,"B":0.5}
 
-transition_p_froma={"A":0.999,"B":0.001}
-transition_p_fromb={"A":0.001,"B":0.999}
+transition_p_froma={"A":0.99999,"B":0.00001}
+transition_p_fromb={"A":0.00001,"B":0.99999}
 
-emission_p_froma={".":0.969,"a":0.03,"b":0.001}
-emission_p_fromb={".":0.969,"a":0.001,"b":0.03}
+emission_p_froma={".":0.967,"a":0.03,"b":0.003}
+emission_p_fromb={".":0.967,"a":0.003,"b":0.03}
 
 ip_np=np.array(list(initial_p.values()))
 tp_np=np.array([list(transition_p_froma.values()),
@@ -100,7 +100,7 @@ if __name__ == "__main__":
 
                 end_time=time.time()
                 time_spent_per_read[population].append(end_time-start_time)
-                time_spent_per_base[population].append((end_time-start_time)/len(hmm_prediction))
+                time_spent_per_base[population].append((end_time-start_time)/read.query_alignment_length)
 
                 #remove temporary files
                 rm_command = f"rm {temp_fasta_path} {temp_total_msa_path} {temp_refs_msa_path}"

@@ -53,7 +53,7 @@ for phage in phages:
                 b_prob[phage].append(np.count_nonzero(e_distribution == 2)/l)
                 
                 end_time=time.time()
-                time_spent[phage].append(end_time-start_time)
+                time_spent[phage].append((end_time-start_time)/l)
                     
                 c+=1
 
@@ -74,12 +74,7 @@ for k,v in b_prob.items():
     print(k," ",np.mean(v))
 print("")
 
-print("sum")
-for phage in phages:
-    print(f"{phage}: {np.mean(null_prob[phage])+np.mean(a_prob[phage])+np.mean(b_prob[phage])}")
-print("")
-
-print("mean time spent")
+print("mean time spent per base")
 for k,v in time_spent.items():
     print(k," ",np.mean(v))
 print("")

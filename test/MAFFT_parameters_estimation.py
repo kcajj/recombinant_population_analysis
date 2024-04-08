@@ -29,6 +29,8 @@ for phage in phages:
     with pysam.AlignmentFile(bam_file, "rb") as bam:
         for read in bam.fetch():
             if not(read.is_secondary):
+                
+                start_time=time.time()
 
                 read_sequence=read.query_sequence
 
@@ -39,9 +41,6 @@ for phage in phages:
                 alignment=AlignIO.read(open(refs_msa_path), "fasta")
                 cut_alignment=alignment[:,map_ref_msa[mapping_start]:map_ref_msa[mapping_end]]
                 AlignIO.write(cut_alignment, temp_refs_msa_path, "fasta")
-
-                # we need to align the read to the refs_msa.fasta file and extract the evidences
-                start_time=time.time()
 
                 # Create a temporary fasta file with the id and sequence of the read
                 with open(temp_fasta_path, "w") as temp_fasta:
@@ -62,13 +61,13 @@ for phage in phages:
                 null_prob[phage].append(np.count_nonzero(e_distribution == 0)/l)
                 a_prob[phage].append(np.count_nonzero(e_distribution == 1)/l)
                 b_prob[phage].append(np.count_nonzero(e_distribution == 2)/l)
-                
-                end_time=time.time()
-                time_spent[phage].append(end_time-start_time)
 
                 #remove temporary files
                 rm_command = f"rm {temp_fasta_path} {temp_output_path} {temp_refs_msa_path}"
                 subprocess.run(rm_command, shell=True)
+
+                end_time=time.time()
+                time_spent[phage].append((end_time-start_time)/l)
                     
                 c+=1
                 print()
@@ -97,12 +96,7 @@ for k,v in b_prob.items():
     print(k," ",np.mean(v))
 print("")
 
-print("sum")
-for phage in phages:
-    print(f"{phage}: {np.mean(null_prob[phage])+np.mean(a_prob[phage])+np.mean(b_prob[phage])}")
-print("")
-
-print("mean time spent")
+print("mean time spent per base")
 for k,v in time_spent.items():
     print(k," ",np.mean(v))
 print("")
