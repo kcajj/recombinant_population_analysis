@@ -2,7 +2,6 @@ import numpy as np
 from handle_msa import get_evidences_distributions, add_to_msa, length_msa
 from viterbi import viterbi_algorithm
 import pysam
-from collections import defaultdict
 import time
 import matplotlib.pyplot as plt
     
@@ -38,11 +37,10 @@ if __name__ == "__main__":
     l_msa=length_msa(refs_msa_path)
     recombination_distribution=np.zeros(l_msa,dtype=int)
 
-    time_spent_per_read=defaultdict(list)
-    time_spent_per_base=defaultdict(list)
-    tot_t_start=time.time()
-    c=0
-    c1=0
+    time_spent_per_read=[]
+    tot_time_start=time.time()
+    c_tot_alignments=0
+    c_useful_alignments=0
     with pysam.AlignmentFile(bam_file, "rb") as bam:
         for read in bam.fetch():
             if not(read.is_secondary):
@@ -82,24 +80,41 @@ if __name__ == "__main__":
                     pre_status = post_status
 
                 end_time=time.time()
-                time_spent_per_read[population].append(end_time-start_time)
-                time_spent_per_base[population].append((end_time-start_time)/l_alignment)
+                time_spent_per_read.append(end_time-start_time)
 
-                print(c)
-                c1+=1
+                print(c_tot_alignments)
+                c_useful_alignments+=1
 
-            c+=1
+                '''
+                plot_path = f"results/plots/strange_reads/{population}_{timestep}_{c_tot_alignments}.png"
 
-    print("mean time spent (per read and per base)")
-    for k,v in time_spent_per_read.items():
-        print(k," ",np.mean(v))
-    for k,v in time_spent_per_base.items():
-        print(k," ",np.mean(v))
-    print("total reads", c)
-    print("reads used", c1)
+                hmm_plot, (evidences, prediction) = plt.subplots(2, 1, figsize=(10, 5))
+                hmm_plot.suptitle(f'HMM read {c_tot_alignments}, {population}, t{timestep}')
+
+                colours = np.where(e_distribution_to_plot == 0, "green", np.where(e_distribution_to_plot == 1, "red", np.where(e_distribution_to_plot == 2, "orange", "blue")))
+                evidences.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), e_distribution_to_plot, c=colours, marker='|', alpha=0.5)
+                evidences.set_title('evidence distribution (0:same, 1:err, 2:a, 3:b)')
+                evidences.set_xlabel("basepair")
+                evidences.set_ylabel("visible states")
+
+                colours = np.where(hmm_prediction == 0, "orange", "blue")
+                prediction.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), hmm_prediction, c=colours, marker='|', alpha=0.5)
+                prediction.set_title(f'HMM prediction (0:A, 1:B)')
+                prediction.set_xlabel("basepair")
+                prediction.set_ylabel("hidden states")
+
+                hmm_plot.tight_layout()
+                hmm_plot.savefig(plot_path)
+                plt.close(hmm_plot)
+                '''
+
+            c_tot_alignments+=1
+
+    print("mean time spent per read", np.mean(time_spent_per_read))
+    print("total reads", c_tot_alignments)
+    print("reads used", c_useful_alignments)
 
     np.savez(output_path,recombination_distribution)
 
-    tot_t_finish=time.time()
-    tot_t=tot_t_finish-tot_t_start
-    print("total time", tot_t)
+    tot_time=time.time()-tot_time_start
+    print("total time", tot_time)

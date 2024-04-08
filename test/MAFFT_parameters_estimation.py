@@ -67,8 +67,8 @@ for phage in phages:
                 subprocess.run(rm_command, shell=True)
 
                 end_time=time.time()
-                time_spent[phage].append((end_time-start_time)/l)
-                    
+                time_spent[phage].append(end_time-start_time)
+                
                 c+=1
                 print()
                 print()
@@ -96,7 +96,7 @@ for k,v in b_prob.items():
     print(k," ",np.mean(v))
 print("")
 
-print("mean time spent per base")
+print("mean time spent per read")
 for k,v in time_spent.items():
     print(k," ",np.mean(v))
 print("")

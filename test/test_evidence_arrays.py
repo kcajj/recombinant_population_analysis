@@ -3,22 +3,6 @@ from handle_msa import get_evidences_distributions, add_to_msa
 import pysam
 import time
 import csv
-from viterbi import viterbi_algorithm
-import matplotlib.pyplot as plt
-
-initial_p={"A":0.5,"B":0.5}
-
-transition_p_froma={"A":0.999,"B":0.001}
-transition_p_fromb={"A":0.001,"B":0.999}
-
-emission_p_froma={".":0.969,"a":0.03,"b":0.001}
-emission_p_fromb={".":0.969,"a":0.001,"b":0.03}
-
-ip_np=np.array(list(initial_p.values()))
-tp_np=np.array([list(transition_p_froma.values()),
-                list(transition_p_fromb.values())])
-ep_np=np.array([list(emission_p_froma.values()),
-                list(emission_p_fromb.values())])
 
 if __name__ == "__main__":
 
@@ -31,8 +15,8 @@ if __name__ == "__main__":
 
     output_path=f"results/evidence_arrays/test_{population}_{timestep}.tsv" #for test dataset
 
-    c=0
-    c1=0
+    c_tot_alignments=0
+    c_useful_alignments=0
     with pysam.AlignmentFile(bam_file, "rb") as bam:
         with open(output_path, 'w', newline='') as tsvfile:
             writer = csv.writer(tsvfile, delimiter='\t', lineterminator='\n')
@@ -67,35 +51,10 @@ if __name__ == "__main__":
                     np.set_printoptions(threshold=np.inf)
                     writer.writerow([mapping_start, mapping_end, e_distribution])
 
-                    c1+=1
-                    print(c)
+                    c_useful_alignments+=1
+                    print(c_tot_alignments)
 
-                    '''
-                    hmm_prediction, log_lik = viterbi_algorithm(e_distribution, tp_np, ep_np, ip_np)
+                c_tot_alignments+=1
 
-                    plot_path = f"results/plots/strange_reads/{population}_{timestep}_{c}.png"
-
-                    hmm_plot, (evidences, prediction) = plt.subplots(2, 1, figsize=(10, 5))
-                    hmm_plot.suptitle(f'HMM read {c}, {population}, t{timestep}')
-
-                    colours = np.where(e_distribution_to_plot == 0, "green", np.where(e_distribution_to_plot == 1, "red", np.where(e_distribution_to_plot == 2, "orange", "blue")))
-                    evidences.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), e_distribution_to_plot, c=colours, marker='|', alpha=0.5)
-                    evidences.set_title('evidence distribution (0:same, 1:err, 2:a, 3:b)')
-                    evidences.set_xlabel("basepair")
-                    evidences.set_ylabel("visible states")
-
-                    colours = np.where(hmm_prediction == 0, "orange", "blue")
-                    prediction.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), hmm_prediction, c=colours, marker='|', alpha=0.5)
-                    prediction.set_title(f'HMM prediction (0:A, 1:B)')
-                    prediction.set_xlabel("basepair")
-                    prediction.set_ylabel("hidden states")
-
-                    hmm_plot.tight_layout()
-                    hmm_plot.savefig(plot_path)
-                    plt.close(hmm_plot)
-                    '''
-
-                c+=1
-
-    print("total reads", c)
-    print("reads used", c1)
+    print("total reads", c_tot_alignments)
+    print("reads used", c_useful_alignments)

@@ -265,3 +265,8 @@ img:
 we can try to normalise for the coverage
 
 ![rec_whole_dataset_normalised](../results/plots/genomewide_recombination/P2_7_normalised_for_coverage.png)
+
+# improving the scripts
+
+1. splitting evidence arrays and prediction arrays
+2. implement parallelisation

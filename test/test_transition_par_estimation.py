@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 
 initial_p={"A":0.5,"B":0.5}
 
-emission_p_froma={".":0.969,"a":0.03,"b":0.001}
-emission_p_fromb={".":0.969,"a":0.001,"b":0.03}
+emission_p_froma={".":0.967,"a":0.03,"b":0.003}
+emission_p_fromb={".":0.967,"a":0.003,"b":0.03}
 
 ip_np=np.array(list(initial_p.values()))
 ep_np=np.array([list(emission_p_froma.values()),
@@ -64,8 +64,6 @@ if __name__ == "__main__":
     plt.savefig(output_path)
 
     '''
-    
-    [-943205.2097164004, -942906.2638220732, -942949.4861723611, -943211.9711662082, -943853.4467290291]
+    [-951497.188732949, -951220.0044402143, -951277.587461576, -951549.7766143129, -952196.7981547866]
     [1e-06, 1e-05, 5e-05, 0.0001, 0.0002]
-    
     '''
