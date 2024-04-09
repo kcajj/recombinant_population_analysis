@@ -1,7 +1,5 @@
 import numpy as np
-from handle_msa import length_msa
 from viterbi import viterbi_algorithm
-from collections import defaultdict
 import time
 import csv
 import sys
@@ -27,7 +25,7 @@ if __name__ == "__main__":
 
     evidence_file=f"results/evidence_arrays/test_{population}_{timestep}.tsv"
 
-    output_path=f"results/plots/parameter_estimation/test_{population}_{timestep}.png"
+    output_path=f"test/parameter_estimation/test_{population}_{timestep}.png"
 
     csv.field_size_limit(sys.maxsize)
 
@@ -62,8 +60,3 @@ if __name__ == "__main__":
     print(transition_p)
     plt.plot(['0.000001','0.00001','0.00005','0.0001','0.0002'],log_likelihoods)
     plt.savefig(output_path)
-
-    '''
-    [-951497.188732949, -951220.0044402143, -951277.587461576, -951549.7766143129, -952196.7981547866]
-    [1e-06, 1e-05, 5e-05, 0.0001, 0.0002]
-    '''

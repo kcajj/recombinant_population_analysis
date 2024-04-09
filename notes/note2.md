@@ -244,7 +244,7 @@ these are the resulting log likelihoods:
 
 we can build a graph:
 
-![transition_par_estimation](../results/plots/parameter_estimation/test_P2_7.png)
+![transition_par_estimation](../test/parameter_estimation/test_P2_7.png)
 
 the best parameter to use is 0.00001
 

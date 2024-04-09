@@ -30,9 +30,9 @@ if __name__ == "__main__":
 
     refs_msa_path="results/msa/refs_msa.fasta"
 
-    evidence_file=f"results/evidence_arrays/test_{population}_{timestep}.tsv" #for test dataset
+    evidence_file=f"results/evidence_arrays/{population}_{timestep}.tsv"
 
-    output_path=f"results/genomewide_recombination_arrays/test_{population}_{timestep}.npz" #for test dataset
+    output_path=f"results/genomewide_recombination_arrays/{population}_{timestep}.npz"
 
     l_msa=length_msa(refs_msa_path)
     recombination_distribution=np.zeros(l_msa,dtype=int)

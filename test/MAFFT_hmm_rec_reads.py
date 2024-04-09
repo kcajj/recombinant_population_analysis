@@ -56,9 +56,9 @@ if __name__ == "__main__":
 
                 map_ref_msa=maps_refs_msa[phage]
 
-                temp_fasta_path = f"results/temp/{c_tot_alignments}.fasta"
-                temp_total_msa_path = f"results/temp/{population}_{timestep}_{c_tot_alignments}_msa.fasta"
-                temp_refs_msa_path = f"results/temp/refs_{population}_{timestep}_{c_tot_alignments}_msa.fasta"
+                temp_fasta_path = f"test/temp/{c_tot_alignments}.fasta"
+                temp_total_msa_path = f"test/temp/{population}_{timestep}_{c_tot_alignments}_msa.fasta"
+                temp_refs_msa_path = f"test/temp/refs_{population}_{timestep}_{c_tot_alignments}_msa.fasta"
 
                 read_sequence=read.query_sequence
 

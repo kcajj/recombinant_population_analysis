@@ -21,9 +21,9 @@ for phage in phages:
     
     map_ref_msa=map_refcoord_msacoord(f"data/references/{phage}_assembly.fasta",refs_msa_path,i_ref_in_msa=phages[phage])
     
-    temp_fasta_path = f"results/temp/{phage}_read.fasta"
-    temp_output_path = f"results/temp/{phage}_read_msa.fasta"
-    temp_refs_msa_path = f"results/temp/{phage}_refs_msa.fasta"
+    temp_fasta_path = f"test/temp/{phage}_read.fasta"
+    temp_output_path = f"test/temp/{phage}_read_msa.fasta"
+    temp_refs_msa_path = f"test/temp/{phage}_refs_msa.fasta"
     
     c = 0
     with pysam.AlignmentFile(bam_file, "rb") as bam:

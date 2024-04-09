@@ -10,6 +10,14 @@ A second script will iterate through the tsv file, giving in input to the viterb
 
 Fortunately python allows to imlement parallelisation easily.
 
+we process the bam and we extract the evidences for each ealignment, writing them on a .tsv file.
+
+Then with another script we iterate in the .tsv, adding to a list the evidence array and to another one the index corresponding to the start of the alignment.
+
+We use the Pool function to use all the cores at the same time, we give them the viterbi algorithm to execute together with the list of evidence arrays.
+
+the ouput will be a list of arrays, we can iterate through them and summarise their information in a single recombination array.
+
 # whole dataset
 
 align all the reads on the hybrid reference.
@@ -56,4 +64,13 @@ we can try to normalise for the coverage
 ![rec_whole_dataset_normalised](../results/plots/genomewide_recombination/P2_7_normalised_for_coverage.png)
 
 ## new run
+
+evidence arrays:
+
+<pre>
+mean time spent per read 0.08137937484408586
+total time 5519.966312408447
+total reads 250355
+reads used 67274
+</pre>
 

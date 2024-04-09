@@ -205,7 +205,7 @@ estimated time per base: 0.000053
 
 estimated total time: 1038216984 * 0.000053 = 12 h
 
-other ways to speed up:
+To speed up more the process we will use parallelisation. We will split the creation of the evidence arrays and the predicitons on each array.
 
-parallelisation
+we hope to reach an ok result in terms of time.
 
