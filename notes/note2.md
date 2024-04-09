@@ -7,10 +7,13 @@ Using MAFFT for each read is too slow. We need to use another approach.
 0. create a benchmark dataset
 1. build a hybrid reference from the MSA
 2. align the recombinant reads to the hybrid reference with minimap2
-3. remove the insertions of each read from the alignment (no gap in the reference)
-4. add the resulting sequence to the msa of the two references, in the mapping region indicated by minimap
-5. treat the new msa as the msa built by MAFFT
-6. compare the results with the results obtained by MAFFT
+3. process the bam:
+    remove the insertions of each read from the alignment (no gap in the reference)
+    
+    add the resulting sequence to the msa of the two references, in the mapping region indicated by minimap
+    
+    treat the new msa as the msa built by MAFFT
+4. compare the results with the results obtained by MAFFT
 
 ## 0. create a test dataset (benchmark and run the MAFFT scripts on it)
 
@@ -49,10 +52,6 @@ EM60   0.0008853449723399029
 mean b probability
 EM11   0.0044132484423344415
 EM60   0.031167819962970477
-
-sum
-EM11: 1.0
-EM60: 1.0000000000000002
 
 mean time spent
 EM11   2.401213432613172
@@ -124,7 +123,7 @@ total time 443.5385274887085
 
 that's a good improvement, even though the performance is still not the best.
 
-## 6. compare the results with the results obtained by mafft
+## 4. compare the results with the results obtained by mafft
 
 We will compare the genome wide recombination:
 
@@ -186,7 +185,11 @@ the number of recombination events is the same in the two arrays: 178.
 
 
 
-### we can do the same thing for parameter estimation
+# Parameter estimation
+
+## Emission parameters
+
+We can implement the same hybrid reference approach and see how the results compare with respect to MAFFT.
 
 <pre>
 
@@ -221,52 +224,28 @@ EM60   0.20331921707205222          5.300837469427553
 
 </pre>
 
-# whole dataset
+# transition parameter
 
-align all the reads on the hybrid reference.
+the transition parameter is estimated by running the prediction with different transition parameters, recording the resulting likelihood. The viterbi algorithm is already calculating the final log likelihood of the prediction, we will just have to give it in output together with the prediction array.
 
-<pre>
+We compute the log likelihood for each read and we sum it with the total log likelihood for the dataset (computed for a specific parameter). By running the same model with different parameters on the same dataset we will have different total log likelihood for the total alignments.
 
-minimap2 -ax map-ont results/msa/hybrid_ref.fasta data/population_reads/P2_7.fastq.gz > results/alignments/P2_7.sam
-samtools sort -@ 4 -o results/alignments/P2_7.bam results/alignments/P2_7.sam
-samtools index results/alignments/P2_7.bam results/alignments/P2_7.bam.bai
+We will estimate the transition parameter just by considering the test dataset.
 
-minimap2 -ax map-ont results/msa/hybrid_ref.fasta data/pure_reads/EM11_new_chemistry.fastq.gz > data/test/hybrid_test_EM11_new_chemistry.sam
-samtools sort -@ 4 -o dacta/test/hybrid_test_EM11_new_chemistry.bam data/test/hybrid_test_EM11_new_chemistry.sam
-samtools index data/test/hybrid_test_EM11_new_chemistry.bam data/test/hybrid_test_EM11_new_chemistry.bam.bai
+We run the prediction on the same reads, that give the same evidence arrays, for the following values of transition probability:
 
-minimap2 -ax map-ont results/msa/hybrid_ref.fasta data/pure_reads/EM60_new_chemistry.fastq.gz > data/test/hybrid_test_EM60_new_chemistry.sam
-samtools sort -@ 4 -o data/test/hybrid_test_EM60_new_chemistry.bam data/test/hybrid_test_EM60_new_chemistry.sam
-samtools index data/test/hybrid_test_EM60_new_chemistry.bam data/test/hybrid_test_EM60_new_chemistry.bam.bai
+[0.000001, 0.00001, 0.00005, 0.0001, 0.0002]
 
-</pre>
+we run each iteration with the hybrid reference approach since it is faster.
 
-we run hmm_rec_reads.py on the whole dataset. i want to see if the result is cool. then we will decide if and how to speed up the process.
+these are the resulting log likelihoods:
 
-i will put a threshold of 5kb of read length. this means that we will analyse 30% of reads and 70% of the total information in terms of mapped bases.
+[-951497.188732949, -951220.0044402143, -951277.587461576, -951549.7766143129, -952196.7981547866]
 
-this is the result:
+we can build a graph:
 
-<pre>
+![transition_par_estimation](../results/plots/parameter_estimation/test_P2_7.png)
 
-mean time spent (per read and per base)
-P2   0.3613691231787451
-P2   3.102784908542215e-05
-total reads 250355
-reads used 67274
-total time 24346.091243982315
+the best parameter to use is 0.00001
 
-</pre>
-
-img:
-
-![rec_whole_dataset](../results/plots/genomewide_recombination/P2_7.png)
-
-we can try to normalise for the coverage
-
-![rec_whole_dataset_normalised](../results/plots/genomewide_recombination/P2_7_normalised_for_coverage.png)
-
-# improving the scripts
-
-1. splitting evidence arrays and prediction arrays
-2. implement parallelisation
+meaning that we assume a recombination event every 10 k bases

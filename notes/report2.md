@@ -4,7 +4,7 @@ We want to use a hidden markov model to reconstruct the most likely path of a re
 
 The HMM model will have [this structure](plan.pdf)
 
-## prediciton on sequences of phage isolates
+##  test of the model
 
 - initial probability matrix (A=0, B=1)
 
@@ -25,6 +25,8 @@ The HMM model will have [this structure](plan.pdf)
 |----|----------|---------|---------|
 |0   |0.949     |0.05     |0.001    |
 |1   |0.949     |0.001    |0.05     |
+
+prediction on clone assemblies:
 
 ![example_clone_prediction](../results/plots/clones/P2_C2_msa.png)
 
