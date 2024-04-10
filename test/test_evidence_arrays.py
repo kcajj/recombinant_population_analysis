@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     bam_file=f"data/test/hybrid_test_{population}_{timestep}.bam" #for test dataset
 
-    output_path=f"results/evidence_arrays/test_{population}_{timestep}.tsv" #for test dataset
+    output_path=f"test/results/evidence_arrays/test_{population}_{timestep}.tsv" #for test dataset
 
     c_tot_alignments=0
     c_useful_alignments=0

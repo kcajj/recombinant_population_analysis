@@ -1,4 +1,3 @@
-from Bio import AlignIO
 import numpy as np
 import matplotlib.pyplot as plt
 from handle_msa import read_msa, get_evidences_distributions
@@ -34,9 +33,9 @@ if __name__ == "__main__":
     for population in populations:
         for clone in clones:
 
-            temp_total_msa_path = f"results/temp/{population}_{clone}_msa.fasta"
+            temp_total_msa_path = f"test/temp/{population}_{clone}_msa.fasta"
 
-            plot_path = f"results/plots/clones/{population}_{clone}_msa.png"
+            plot_path = f"test/results/plots/clones/{population}_{clone}_msa.png"
 
             assembly_sequence=f"data/clone_assemblies/{population}_{clone}_assembly.fasta"
 

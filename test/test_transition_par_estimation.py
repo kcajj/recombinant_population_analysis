@@ -23,9 +23,9 @@ if __name__ == "__main__":
 
     refs_msa_path="results/msa/refs_msa.fasta"
 
-    evidence_file=f"results/evidence_arrays/test_{population}_{timestep}.tsv"
+    evidence_file=f"test/results/evidence_arrays/test_{population}_{timestep}.tsv"
 
-    output_path=f"test/parameter_estimation/test_{population}_{timestep}.png"
+    output_path=f"test/plots/parameter_estimation/test_{population}_{timestep}.png"
 
     csv.field_size_limit(sys.maxsize)
 

@@ -1,4 +1,4 @@
 data/
-scripts/__pycache__/
+__pycache__/
 results/alignments/
 results/evidence_arrays/

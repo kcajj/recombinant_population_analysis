@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     bam_file=f"data/test/test_{population}_{timestep}.bam" #for test dataset
 
-    output_path = f"results/genomewide_recombination_arrays/MAFFT_test_{population}_{timestep}.npz" #for test dataset
+    output_path = f"test/results/genomewide_recombination_arrays/MAFFT_test_{population}_{timestep}.npz" #for test dataset
 
     l_msa=length_msa(refs_msa_path)
     recombination_distribution=np.zeros(l_msa,dtype=int)
@@ -107,7 +107,7 @@ if __name__ == "__main__":
                 c_useful_alignments+=1
 
                 '''
-                plot_path = f"results/plots/MAFFT_reads/{population}_{timestep}_{c_tot_alignments}.png"
+                plot_path = f"test/results/plots/MAFFT_reads/{population}_{timestep}_{c_tot_alignments}.png"
 
                 hmm_plot, (evidences, prediction) = plt.subplots(2, 1, figsize=(10, 5))
                 hmm_plot.suptitle(f'HMM read {c_tot_alignments}, {population}, t{timestep}')
