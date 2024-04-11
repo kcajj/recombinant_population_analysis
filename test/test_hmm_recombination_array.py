@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     cores=4
 
-    refs_msa_path="results/msa/refs_msa.fasta"
+    refs_msa_path="results/msa/msa_refs.fasta"
 
     evidence_file=f"test/results/evidence_arrays/test_{population}_{timestep}.tsv" #for test dataset
 
@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
             mapping_start=int(line[0])
             mapping_end=int(line[1])
-            evidence_array_str=line[2][1:-1].replace("\n","").split(" ")
+            evidence_array_str=line[2][1:-1].split(' ')
             evidence_array=np.array([int(e) for e in evidence_array_str])
 
             evidence_arrays.append(evidence_array)

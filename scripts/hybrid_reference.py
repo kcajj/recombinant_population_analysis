@@ -27,9 +27,6 @@ def create_hybrid_ref(msa_path):
 
 if __name__ == "__main__":
 
-    msa_path = "results/msa/refs_msa.fasta"
-    hybrid_ref_path = "results/msa/hybrid_ref.fasta"
-
     import argparse
 
     parser = argparse.ArgumentParser(

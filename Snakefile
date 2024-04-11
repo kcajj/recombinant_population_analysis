@@ -29,7 +29,7 @@ rule hybrid_ref:
         python scripts/hybrid_reference.py \
             --msa {input.msa} \
             --out {output.hybrid_ref}
-    """
+        """
 
 rule read_mapping:
     input:
@@ -47,7 +47,27 @@ rule read_mapping:
         samtools sort {output.sam} > {output.bam}
         samtools index {output.bam}
         """
+rule evidence_arrays:
+    input:
+        bam=rules.read_mapping.output.bam,
+        msa = rules.msa.output.msa
+    output:
+        evidences='results/evidence_arrays/{population}/{timestep}/{population}_{timestep}.tsv',
+        coverage='results/coverage_arrays/{population}/{timestep}/{population}_{timestep}.npz'
+    conda:
+        'conda_envs/scientific_python.yml'
+    params:
+        length_threshold=5000
+    shell:
+        """
+        python scripts/extract_evidence_arrays.py \
+            --bam {input.bam} \
+            --msa_refs {input.msa} \
+            --evidences_out {output.evidences} \
+            --coverage_out {output.coverage} \
+            --length_threshold {params.length_threshold}
+        """
 
 rule all:
     input:
-        mapped_reads=expand(rules.read_mapping.output.bai, population="P2", timestep="7")
+        evidence_arrays=expand(rules.evidence_arrays.output.evidences, population="P2", timestep="7")

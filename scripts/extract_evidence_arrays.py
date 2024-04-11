@@ -1,34 +1,25 @@
 import numpy as np
-from handle_msa import get_evidences_distributions, add_to_msa
+from handle_msa import length_msa, get_evidences_distributions, add_to_msa
 import pysam
 import time
 import csv
 
-if __name__ == "__main__":
+def write_evidence_arrays(bam_file, refs_msa_path, output_evidences_path, output_coverage_path, length_threshold):
 
-    population='P2'
-    timestep='7'
-
-    refs_msa_path="results/msa/refs_msa.fasta"
-
-    bam_file=f"results/alignments/{population}_{timestep}.bam" #for test dataset
-
-    output_path=f"results/evidence_arrays/{population}_{timestep}.tsv" #for test dataset
-
-    length_treshold=5000
+    coverage = np.zeros(length_msa(refs_msa_path), dtype=int)
 
     time_spent_per_read=[]
     tot_time_start=time.time()
     c_tot_alignments=0
     c_useful_alignments=0
     with pysam.AlignmentFile(bam_file, "rb") as bam:
-        with open(output_path, 'w', newline='') as tsvfile:
+        with open(output_evidences_path, 'w', newline='') as tsvfile:
             writer = csv.writer(tsvfile, delimiter='\t', lineterminator='\n')
             for read in bam.fetch():
                 if not(read.is_secondary):
                     
                     l_alignment=read.query_alignment_length
-                    if l_alignment>length_treshold:
+                    if l_alignment>length_threshold:
                         start_time=time.time()
 
                         read_seq = read.query_sequence
@@ -46,13 +37,16 @@ if __name__ == "__main__":
                                 else:
                                     read_msa_seq+=read_seq[read_pos].lower()
 
+                                    #update coverage
+                                    coverage[ref_pos]+=1
+
                         msa_matrix = add_to_msa(refs_msa_path, read_msa_seq, mapping_start, mapping_end)
 
                         e_distribution_to_plot = get_evidences_distributions(msa_matrix)
 
                         e_distribution = np.where(e_distribution_to_plot > 0, e_distribution_to_plot-1, e_distribution_to_plot)
                         
-                        np.set_printoptions(threshold=np.inf)
+                        np.set_printoptions(threshold=np.inf,linewidth=np.inf)
                         writer.writerow([mapping_start, mapping_end, e_distribution])
 
                         end_time=time.time()
@@ -62,8 +56,35 @@ if __name__ == "__main__":
                         print(c_tot_alignments)
 
                 c_tot_alignments+=1
+            
+            #save coverage array
+            np.savez(output_coverage_path,coverage)
 
     print("mean time spent per read", np.mean(time_spent_per_read))
     print("total time", time.time()-tot_time_start)
     print("total reads", c_tot_alignments)
     print("reads used", c_useful_alignments)
+
+    
+if __name__ == "__main__":
+    
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Extract all the evidence arrays from the alignments of a bam file",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument("--bam", help="path of the bam file")
+    parser.add_argument("--msa_refs", help="path of the msa between the references")
+    parser.add_argument("--evidences_out", help="output path of the .tsv file containing the evidence arrays")
+    parser.add_argument("--coverage_out", help="output path of the .npz file containing the coverage array")
+    parser.add_argument("--length_threshold", help="minimum length of the alignment to be considered", type=int)
+
+    args = parser.parse_args()
+    bam_file=args.bam
+    refs_msa_path=args.msa_refs
+    output_evidences_path=args.evidences_out
+    output_coverage_path=args.coverage_out
+    length_threshold=args.length_threshold
+
+    write_evidence_arrays(bam_file, refs_msa_path, output_evidences_path, output_coverage_path, length_threshold)
