@@ -1,14 +1,10 @@
-from Bio import SeqIO,AlignIO
+from Bio import AlignIO
 import numpy as np
 import random
 
-if __name__ == "__main__":
-
-    msa_path = "results/msa/refs_msa.fasta"
-    hybrid_ref_path = "results/msa/hybrid_ref.fasta"
+def create_hybrid_ref(msa_path):
 
     alignment = AlignIO.read(open(msa_path), "fasta")
-    print(alignment)
     l=alignment.get_alignment_length()
     msa_matrix=np.zeros([2,l],dtype=str)
     for i,record in enumerate(alignment):
@@ -26,6 +22,28 @@ if __name__ == "__main__":
                 hybrid_ref_seq+=msa_matrix[0][pos]
             else:
                 hybrid_ref_seq+=msa_matrix[1][pos]
+
+    return hybrid_ref_seq
+
+if __name__ == "__main__":
+
+    msa_path = "results/msa/refs_msa.fasta"
+    hybrid_ref_path = "results/msa/hybrid_ref.fasta"
+
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Create a hybrid reference sequence from a pairwise alignment",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument("--msa", help="path of the paiwise alignment")
+    parser.add_argument("--out", help="output hybrid reference")
+
+    args = parser.parse_args()
+    msa_path=args.msa
+    hybrid_ref_path=args.out
+
+    hybrid_ref_seq=create_hybrid_ref(msa_path)    
 
     with open(hybrid_ref_path, "w") as output_handle:
         output_handle.write(">hybrid_ref\n")

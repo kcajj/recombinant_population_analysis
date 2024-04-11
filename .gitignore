@@ -2,3 +2,5 @@ data/
 __pycache__/
 results/alignments/
 results/evidence_arrays/
+log/
+.snakemake/

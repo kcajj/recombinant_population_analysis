@@ -1,0 +1,53 @@
+name: read_mapping
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - _libgcc_mutex=0.1
+  - _openmp_mutex=4.5
+  - bzip2=1.0.8
+  - c-ares=1.19.1
+  - ca-certificates=2023.7.22
+  - htslib=1.17
+  - k8=0.2.5
+  - keyutils=1.6.1
+  - krb5=1.21.1
+  - ld_impl_linux-64=2.40
+  - libblas=3.9.0
+  - libcblas=3.9.0
+  - libcurl=8.2.1
+  - libdeflate=1.18
+  - libedit=3.1.20191231
+  - libev=4.33
+  - libffi=3.4.2
+  - libgcc-ng=13.1.0
+  - libgfortran-ng=13.1.0
+  - libgfortran5=13.1.0
+  - libgomp=13.1.0
+  - liblapack=3.9.0
+  - libnghttp2=1.52.0
+  - libnsl=2.0.0
+  - libopenblas=0.3.23
+  - libsqlite=3.42.0
+  - libssh2=1.11.0
+  - libstdcxx-ng=13.1.0
+  - libuuid=2.38.1
+  - libzlib=1.2.13
+  - minimap2=2.26
+  - ncurses=6.4
+  - numpy=1.25.1
+  - openssl=3.1.2
+  - pip=23.2.1
+  - pysam=0.21.0
+  - python=3.10.12
+  - python_abi=3.10
+  - readline=8.2
+  - samtools=1.17
+  - setuptools=68.0.0
+  - tk=8.6.12
+  - tzdata=2023c
+  - wheel=0.41.0
+  - xz=5.2.6
+  - zlib=1.2.13
+  - zstd=1.5.2
+prefix: /home/giacomocastagnetti/mambaforge/envs/read_mapping

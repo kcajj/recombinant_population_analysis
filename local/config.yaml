@@ -1,0 +1,4 @@
+use-conda: true
+conda-frontend: 'mamba'
+cores: 4
+printshellcmds: true

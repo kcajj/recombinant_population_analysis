@@ -74,3 +74,7 @@ total reads 250355
 reads used 67274
 </pre>
 
+# building the pipeline
+
+we add a Snakefile, config.yaml file, cluster folder, conda_envs folder, local folder and log folder.
+
