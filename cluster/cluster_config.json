@@ -5,10 +5,10 @@
         "n": 4,
         "mem": "8G"
     },
-    "read_mapping": {
+    "recombination_array": {
         "time": "00:29:00",
         "qos": "30min",
-        "n": 4,
+        "n": 20,
         "mem": "16G"
     }
 }

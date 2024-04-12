@@ -1,4 +1,4 @@
-
+configfile: "config.yml"
 
 reads = 'data/reads/{population}_{timestep}.fastq.gz'
 references = 'data/references.fasta'
@@ -57,7 +57,7 @@ rule evidence_arrays:
     conda:
         'conda_envs/scientific_python.yml'
     params:
-        length_threshold=5000
+        length_threshold = config["length_threshold"]
     shell:
         """
         python scripts/extract_evidence_arrays.py \
@@ -68,6 +68,47 @@ rule evidence_arrays:
             --length_threshold {params.length_threshold}
         """
 
+rule recombination_array:
+    input:
+        evidences=rules.evidence_arrays.output.evidences,
+        msa = rules.msa.output.msa
+    output:
+        recombination='results/genomewide_recombination_arrays/{population}/{timestep}/{population}_{timestep}.npz'
+    conda:
+        'conda_envs/scientific_python.yml'
+    params:
+        cores = config["cores"],
+        initial_probability = config["initial_probability"]["A"]+","+config["initial_probability"]["B"],
+        transition_probability = config["transition_probability"]["A"]["A"]+","+config["transition_probability"]["A"]["B"]+"/"+config["transition_probability"]["B"]["A"]+","+config["transition_probability"]["B"]["B"],
+        emission_probability = config["emission_probability"]["A"][0]+","+config["emission_probability"]["A"][1]+","+config["emission_probability"]["A"][2]+"/"+config["emission_probability"]["B"][0]+","+config["emission_probability"]["B"][1]+","+config["emission_probability"]["B"][2]
+    shell:
+        """
+        python scripts/hmm_recombination_array.py \
+            --evidences {input.evidences} \
+            --msa_refs {input.msa} \
+            --out {output.recombination} \
+            --cores {params.cores} \
+            --initial_p {params.initial_probability}\
+            --transition_p {params.transition_probability}\
+            --emission_p {params.emission_probability}
+        """
+
+rule plot_recombination_array:
+    input:
+        recombination=rules.recombination_array.output.recombination,
+        coverage=rules.evidence_arrays.output.coverage
+    output:
+        plots='results/plots/{population}/{population}_{timestep}.png'
+    conda:
+        'conda_envs/scientific_python.yml'
+    shell:
+        """
+        python scripts/plot_recombination_array.py \
+            --recombination {input.recombination} \
+            --coverage {input.coverage} \
+            --out {output.plots}
+        """
+
 rule all:
     input:
-        evidence_arrays=expand(rules.evidence_arrays.output.evidences, population="P2", timestep="7")
+        plots=expand(rules.plot_recombination_array.output.plots, population="P2", timestep="7")

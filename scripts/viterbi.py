@@ -27,4 +27,4 @@ def viterbi_algorithm(y, A, B, pi):
         x_seq_opt[i] = prev_ind
         i -= 1
         prev_ind = x_seq[int(prev_ind), i]
-    return x_seq_opt
+    return x_seq_opt, np.max(V)

@@ -1,0 +1,23 @@
+length_threshold: 5000
+
+cores: 4
+
+initial_probability:
+  A: "0.5"
+  B: "0.5"
+transition_probability:
+  A:
+    A: "0.99999"
+    B: "0.00001"
+  B:
+    A: "0.00001"
+    B: "0.99999"
+emission_probability:
+  A:
+    0: "0.967"
+    1: "0.03"
+    2: "0.003"
+  B:
+    0: "0.967"
+    1: "0.003"
+    2: "0.03"

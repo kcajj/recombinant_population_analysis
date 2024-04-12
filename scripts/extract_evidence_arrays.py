@@ -54,6 +54,7 @@ def write_evidence_arrays(bam_file, refs_msa_path, output_evidences_path, output
 
                         c_useful_alignments+=1
                         print(c_tot_alignments)
+                        break
 
                 c_tot_alignments+=1
             
