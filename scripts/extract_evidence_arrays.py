@@ -53,7 +53,6 @@ def write_evidence_arrays(bam_file, refs_msa_path, output_evidences_path, output
                         time_spent_per_read.append(end_time-start_time)
 
                         c_useful_alignments+=1
-                        break
 
                 c_tot_alignments+=1
             
