@@ -99,9 +99,11 @@ if __name__ == "__main__":
 
     np.savez(output_path,recombination_distribution)
 
-    print("total log likelihood",tot_log_lik)
-
     tot_t=time.time()-tot_t_start
-    print("total time", tot_t)
-    print("total reads", c_reads)
-    print("time per read", tot_t/c_reads)
+
+    output_stats_path=output_path[:-4]+"_stats.txt"
+    with open(output_stats_path, 'w') as f:
+        f.write("total log likelihood "+str(tot_log_lik)+'\n')
+        f.write("total time "+str(tot_t)+'\n')
+        f.write("total reads "+str(c_reads)+'\n')
+        f.write("time per read "+str(tot_t/c_reads)+'\n')

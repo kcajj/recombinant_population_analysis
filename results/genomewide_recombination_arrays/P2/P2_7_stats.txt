@@ -1,0 +1,4 @@
+total log likelihood -1375.1129170484865
+total time 0.2603890895843506
+total reads 1
+time per read 0.2603890895843506

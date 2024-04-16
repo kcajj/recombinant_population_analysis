@@ -53,7 +53,6 @@ def write_evidence_arrays(bam_file, refs_msa_path, output_evidences_path, output
                         time_spent_per_read.append(end_time-start_time)
 
                         c_useful_alignments+=1
-                        print(c_tot_alignments)
                         break
 
                 c_tot_alignments+=1
@@ -61,11 +60,12 @@ def write_evidence_arrays(bam_file, refs_msa_path, output_evidences_path, output
             #save coverage array
             np.savez(output_coverage_path,coverage)
 
-    print("mean time spent per read", np.mean(time_spent_per_read))
-    print("total time", time.time()-tot_time_start)
-    print("total reads", c_tot_alignments)
-    print("reads used", c_useful_alignments)
-
+    output_stats_path=output_evidences_path[:-4]+"_stats.txt"
+    with open(output_stats_path, 'w') as f:
+        f.write("mean time spent per read "+str(np.mean(time_spent_per_read))+'\n')
+        f.write("total time "+str(time.time()-tot_time_start)+'\n')
+        f.write("total reads "+str(c_tot_alignments)+'\n')
+        f.write("reads used "+str(c_useful_alignments)+'\n')
     
 if __name__ == "__main__":
     

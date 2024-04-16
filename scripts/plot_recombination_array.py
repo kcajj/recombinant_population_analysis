@@ -23,15 +23,6 @@ def plot(array, output_path, title, x_label, y_label):
 
 if __name__ == "__main__":
     
-    population="P2"
-    timestep="7"
-
-    recombination_distribution_path=f"results/genomewide_recombination_arrays/{population}_{timestep}.npz"
-
-    coverage_array_path=f"results/coverage_arrays/{population}_{timestep}.npz"
-
-    output_path=f"results/plots/genomewide_recombination/{population}_{timestep}"
-
     import argparse
 
     parser = argparse.ArgumentParser(
@@ -55,7 +46,7 @@ if __name__ == "__main__":
 
     plot(recombination_distribution, output_path, f"Recombination distribution {id}", "position", "recombination rate")
 
-    normalised = recombination_distribution/coverage
+    normalised = np.divide(recombination_distribution.astype(float), coverage.astype(float), out=np.zeros_like(recombination_distribution.astype(float)), where=coverage.astype(float)!=0)
     normalised_output_path = output_path[:-4]+"_normalised.png"
     
     plot(normalised, normalised_output_path, f"Normalised recombination distribution {id}", "position", "recombination rate")

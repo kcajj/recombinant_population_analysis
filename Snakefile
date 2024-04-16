@@ -52,8 +52,8 @@ rule evidence_arrays:
         bam=rules.read_mapping.output.bam,
         msa = rules.msa.output.msa
     output:
-        evidences='results/evidence_arrays/{population}/{timestep}/{population}_{timestep}.tsv',
-        coverage='results/coverage_arrays/{population}/{timestep}/{population}_{timestep}.npz'
+        evidences='results/evidence_arrays/{population}/{population}_{timestep}.tsv',
+        coverage='results/coverage_arrays/{population}/{population}_{timestep}.npz'
     conda:
         'conda_envs/scientific_python.yml'
     params:
@@ -73,7 +73,7 @@ rule recombination_array:
         evidences=rules.evidence_arrays.output.evidences,
         msa = rules.msa.output.msa
     output:
-        recombination='results/genomewide_recombination_arrays/{population}/{timestep}/{population}_{timestep}.npz'
+        recombination='results/genomewide_recombination_arrays/{population}/{population}_{timestep}.npz'
     conda:
         'conda_envs/scientific_python.yml'
     params:
