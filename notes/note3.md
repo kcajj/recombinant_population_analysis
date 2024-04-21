@@ -6,6 +6,10 @@ We want to go through the bam file, build the artificial msa thorugh the minimap
 
 A second script will iterate through the tsv file, giving in input to the viterbi algorithm the sequence of evidences and them analysing the prediction array. if the prediction has a switch (recombination) we want to add it to a genome wide array, in the correct place, adding to the index of the prediction the mapping start.
 
+## implementing normalisation by coverage
+
+during evidence extraction, we can keep track of the coverage of the hybrid reference and store it in a .npz array.
+
 ## parallelisation
 
 Fortunately python allows to imlement parallelisation easily.
@@ -17,6 +21,20 @@ Then with another script we iterate in the .tsv, adding to a list the evidence a
 We use the Pool function to use all the cores at the same time, we give them the viterbi algorithm to execute together with the list of evidence arrays.
 
 the ouput will be a list of arrays, we can iterate through them and summarise their information in a single recombination array.
+
+## snakemake pipeline
+
+the creation of the snakemake pipeline was straightforward. i implemented a config file that allows to:
+
+- input all the parameters of the viterbi algorithm
+
+- input the length threshold to apply to the alignments of the bam file
+
+- input the number of cores to use during the parallelisation
+
+i added some .txt files as output of the scripts to store the statistics of the execution (execution time ecc.)
+
+
 
 # whole dataset
 

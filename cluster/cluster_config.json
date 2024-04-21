@@ -5,9 +5,15 @@
         "n": 4,
         "mem": "8G"
     },
+    "evidence_arrays": {
+        "time": "05:59:00",
+        "qos": "6hours",
+        "n": 4,
+        "mem": "8G"
+    },
     "recombination_array": {
-        "time": "00:29:00",
-        "qos": "30min",
+        "time": "05:59:00",
+        "qos": "6hours",
         "n": 20,
         "mem": "16G"
     }

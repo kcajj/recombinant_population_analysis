@@ -183,8 +183,6 @@ no improvements. maybe we cannot trust mafft (used in the way we are using it) a
 
 the number of recombination events is the same in the two arrays: 178.
 
-
-
 # Parameter estimation
 
 ## Emission parameters

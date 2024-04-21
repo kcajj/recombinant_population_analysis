@@ -1,5 +1,6 @@
 configfile: "config.yml"
 
+#reads = 'data/reads_for_test/test_{population}_{timestep}.fastq.bgz'
 reads = 'data/reads/{population}_{timestep}.fastq.gz'
 references = 'data/references.fasta'
 
@@ -47,6 +48,7 @@ rule read_mapping:
         samtools sort {output.sam} > {output.bam}
         samtools index {output.bam}
         """
+
 rule evidence_arrays:
     input:
         bam=rules.read_mapping.output.bam,
