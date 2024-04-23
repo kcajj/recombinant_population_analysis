@@ -31,14 +31,15 @@ def write_evidence_arrays(bam_file, refs_msa_path, output_evidences_path, output
                         alignment_array = read.get_aligned_pairs()
 
                         for (read_pos,ref_pos) in alignment_array:
-                            if ref_pos!=None: #clips and gaps ar
+                            if ref_pos!=None: #clips and gaps in the reference are not considered
                                 if read_pos==None:
-                                    read_msa_seq+='-'
+                                    read_msa_seq+='-'#gap in the read
                                 else:
                                     read_msa_seq+=read_seq[read_pos].lower()
 
-                                    #update coverage
-                                    coverage[ref_pos]+=1
+                                #update coverage
+                                coverage[ref_pos]+=1
+                                #we consider also the gaps since they are considered as no-evidence in the subsequent steps
 
                         msa_matrix = add_to_msa(refs_msa_path, read_msa_seq, mapping_start, mapping_end)
 
