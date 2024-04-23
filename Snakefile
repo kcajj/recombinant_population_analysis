@@ -70,12 +70,12 @@ rule evidence_arrays:
             --length_threshold {params.length_threshold}
         """
 
-rule recombination_array:
+rule prediction_arrays:
     input:
         evidences=rules.evidence_arrays.output.evidences,
         msa = rules.msa.output.msa
     output:
-        recombination='results/genomewide_recombination_arrays/{population}/{population}_{timestep}.npz'
+        predictions='results/prediction_arrays/{population}/{population}_{timestep}.tsv'
     conda:
         'conda_envs/scientific_python.yml'
     params:
@@ -85,19 +85,35 @@ rule recombination_array:
         emission_probability = config["emission_probability"]["A"][0]+","+config["emission_probability"]["A"][1]+","+config["emission_probability"]["A"][2]+"/"+config["emission_probability"]["B"][0]+","+config["emission_probability"]["B"][1]+","+config["emission_probability"]["B"][2]
     shell:
         """
-        python scripts/hmm_recombination_array.py \
+        python scripts/hmm_prediction_arrays.py \
             --evidences {input.evidences} \
             --msa_refs {input.msa} \
-            --out {output.recombination} \
+            --out {output.predictions} \
             --cores {params.cores} \
             --initial_p {params.initial_probability}\
             --transition_p {params.transition_probability}\
             --emission_p {params.emission_probability}
         """
 
+rule genomewide_recombination_array:
+    input:
+        predictions=rules.prediction_arrays.output.predictions,
+        msa = rules.msa.output.msa
+    output:
+        genomewide_recombination='results/genomewide_recombination/{population}/{population}_{timestep}.npz'
+    conda:
+        'conda_envs/scientific_python.yml'
+    shell:
+        """
+        python scripts/genomewide_recombination.py \
+            --predictions {input.predictions} \
+            --msa_refs {input.msa} \
+            --out {output.genomewide_recombination}
+        """
+
 rule plot_recombination_array:
     input:
-        recombination=rules.recombination_array.output.recombination,
+        recombination=rules.genomewide_recombination_array.output.genomewide_recombination,
         coverage=rules.evidence_arrays.output.coverage
     output:
         plots='results/plots/{population}/{population}_{timestep}.png'

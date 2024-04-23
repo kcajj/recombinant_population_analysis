@@ -1,0 +1,5 @@
+recombination array prediction run of results/evidence_arrays/P2/P2_7.tsv
+total log likelihood 0
+total time 179.35632729530334
+total reads 139
+time per read 1.2903332898942688
