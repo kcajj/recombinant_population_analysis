@@ -47,7 +47,7 @@ def write_evidence_arrays(bam_file, refs_msa_path, output_evidences_path, output
                         e_distribution = np.where(e_distribution_to_plot > 0, e_distribution_to_plot-1, e_distribution_to_plot)
                         
                         np.set_printoptions(threshold=np.inf,linewidth=np.inf)
-                        writer.writerow([mapping_start, mapping_end, e_distribution])
+                        writer.writerow([read.query_name, mapping_start, mapping_end, e_distribution])
 
                         end_time=time.time()
                         time_spent_per_read.append(end_time-start_time)
@@ -61,6 +61,7 @@ def write_evidence_arrays(bam_file, refs_msa_path, output_evidences_path, output
 
     output_stats_path=output_evidences_path[:-4]+"_stats.txt"
     with open(output_stats_path, 'w') as f:
+        f.write("evidence arrays extraction run of "+bam_file+'\n')
         f.write("mean time spent per read "+str(np.mean(time_spent_per_read))+'\n')
         f.write("total time "+str(time.time()-tot_time_start)+'\n')
         f.write("total reads "+str(c_tot_alignments)+'\n')

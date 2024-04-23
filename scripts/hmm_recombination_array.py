@@ -26,10 +26,10 @@ def get_evidence_arrays(evidences_file):
     with open(evidences_file) as file:
         tsv_file = csv.reader(file, delimiter="\t")
         for line in tsv_file:
-
-            mapping_start=int(line[0])
-            #mapping_end=int(line[1])
-            evidence_array_str=line[2][1:-1].split(' ')
+            #read_name=line[0]
+            mapping_start=int(line[1])
+            #mapping_end=int(line[2])
+            evidence_array_str=line[3][1:-1].split(' ')
             evidence_array=np.array([int(e) for e in evidence_array_str])
 
             evidence_arrays.append(evidence_array)
@@ -103,6 +103,7 @@ if __name__ == "__main__":
 
     output_stats_path=output_path[:-4]+"_stats.txt"
     with open(output_stats_path, 'w') as f:
+        f.write("recombination array prediction run of "+evidences_file+'\n')
         f.write("total log likelihood "+str(tot_log_lik)+'\n')
         f.write("total time "+str(tot_t)+'\n')
         f.write("total reads "+str(c_reads)+'\n')

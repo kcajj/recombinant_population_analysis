@@ -1,7 +1,7 @@
 configfile: "config.yml"
 
-#reads = 'data/reads_for_test/test_{population}_{timestep}.fastq.bgz'
-reads = 'data/reads/{population}_{timestep}.fastq.gz'
+reads = 'data/reads_for_test/test_{population}_{timestep}.fastq.bgz'
+#reads = 'data/reads/{population}_{timestep}.fastq.gz'
 references = 'data/references.fasta'
 
 rule msa:
