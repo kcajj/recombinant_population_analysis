@@ -100,7 +100,9 @@ rule genomewide_recombination_array:
         predictions=rules.prediction_arrays.output.predictions,
         msa = rules.msa.output.msa
     output:
-        genomewide_recombination='results/genomewide_recombination/{population}/{population}_{timestep}.npz'
+        genomewide_recombination='results/genomewide_recombination/{population}/{population}_{timestep}.npz',
+        genomewide_recombination_01='results/genomewide_recombination/{population}/{population}_{timestep}_01.npz',
+        genomewide_recombination_10='results/genomewide_recombination/{population}/{population}_{timestep}_10.npz'
     conda:
         'conda_envs/scientific_python.yml'
     shell:
@@ -108,7 +110,9 @@ rule genomewide_recombination_array:
         python scripts/genomewide_recombination.py \
             --predictions {input.predictions} \
             --msa_refs {input.msa} \
-            --out {output.genomewide_recombination}
+            --out {output.genomewide_recombination} \
+            --out_01 {output.genomewide_recombination_01} \
+            --out_10 {output.genomewide_recombination_10}
         """
 
 rule plot_recombination_array:
@@ -116,7 +120,7 @@ rule plot_recombination_array:
         recombination=rules.genomewide_recombination_array.output.genomewide_recombination,
         coverage=rules.evidence_arrays.output.coverage
     output:
-        plots='results/plots/{population}/{population}_{timestep}.png'
+        plots='results/plots/{population}/total/{population}_{timestep}.png'
     conda:
         'conda_envs/scientific_python.yml'
     shell:
@@ -127,6 +131,25 @@ rule plot_recombination_array:
             --out {output.plots}
         """
 
+rule plot_directional_recombination:
+    input:
+        recombination_01=rules.genomewide_recombination_array.output.genomewide_recombination_01,
+        recombination_10=rules.genomewide_recombination_array.output.genomewide_recombination_10,
+        coverage=rules.evidence_arrays.output.coverage
+    output:
+        plots='results/plots/{population}/directional/{population}_{timestep}.png'
+    conda:
+        'conda_envs/scientific_python.yml'
+    shell:
+        """
+        python scripts/plot_directional_recombination.py \
+            --recombination_01 {input.recombination_01} \
+            --recombination_10 {input.recombination_10} \
+            --coverage {input.coverage} \
+            --out {output.plots}
+        """
+
 rule all:
     input:
-        plots=expand(rules.plot_recombination_array.output.plots, population=["P2","P3"], timestep=["1","3","5","7"])
+        plots=expand(rules.plot_recombination_array.output.plots, population=["P2","P3"], timestep=["1","3","5","7"]),
+        directional_plots=expand(rules.plot_directional_recombination.output.plots, population=["P2","P3"], timestep=["1","3","5","7"])

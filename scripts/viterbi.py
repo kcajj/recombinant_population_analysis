@@ -21,7 +21,7 @@ def viterbi_algorithm(y, A, B, pi):
     x_T = np.argmax(V)
 
     # backward to fetch optimal sequence
-    x_seq_opt, i = np.zeros(x_seq.shape[1]+1), x_seq.shape[1]
+    x_seq_opt, i = np.zeros(x_seq.shape[1]+1,dtype=int), x_seq.shape[1]
     prev_ind = x_T
     while i >= 0:
         x_seq_opt[i] = prev_ind

@@ -1,6 +1,6 @@
 length_threshold: 5000
 
-cores: 4
+cores: 20
 
 initial_probability:
   A: "0.5"
