@@ -8,7 +8,7 @@ A second script will iterate through the tsv file, giving in input to the viterb
 
 ## implementing normalisation by coverage
 
-during evidence extraction, we can keep track of the coverage of the hybrid reference and store it in a .npz array.
+during evidence extraction, we can keep track of the coverage of the hybrid reference and store it in a .npz array. we consider as coverage also the gaps of the reads, this is because in the successive steps the gaps are handled as no evidence, and we will make a prediction of the hidden states also in correspondence of gaps.
 
 ## parallelisation
 
