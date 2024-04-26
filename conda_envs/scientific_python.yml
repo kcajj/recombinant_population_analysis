@@ -3,10 +3,10 @@ channels:
   - bioconda
   - conda-forge
 dependencies:
-  - python
-  - biopython
-  - numpy
-  - matplotlib
-  - pysam
-  - pandas
-  - plotly
+  - python=3.10.12
+  - biopython=1.81
+  - numpy=1.25.2
+  - matplotlib=3.7.2
+  - pysam=0.21.0
+  - pandas=2.0.3
+  - plotly=5.15.0

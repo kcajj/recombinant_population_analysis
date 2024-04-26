@@ -1,6 +1,6 @@
 from Bio import AlignIO
 import numpy as np
-from handle_msa import read_msa, get_evidences_distributions, map_refcoord_msacoord, length_msa
+from handle_msa import read_msa, get_evidences_distributions, map_refcoord_msacoord, length_msa, extract_references_names
 from viterbi import viterbi_algorithm
 import pysam
 import time
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     
     phages={'EM11':0,'EM60':1}
 
-    refs_msa_path="results/msa/refs_msa.fasta"
+    refs_msa_path="test/results/msa/msa_refs.fasta"
     maps_refs_msa={}
     for phage in phages:
         maps_refs_msa[phage]=map_refcoord_msacoord(f"data/references/{phage}_assembly.fasta",refs_msa_path,i_ref_in_msa=phages[phage])
@@ -40,6 +40,8 @@ if __name__ == "__main__":
     bam_file=f"data/test/test_{population}_{timestep}.bam" #for test dataset
 
     output_path = f"test/results/genomewide_recombination_arrays/MAFFT_test_{population}_{timestep}.npz" #for test dataset
+
+    references=extract_references_names(refs_msa_path)
 
     l_msa=length_msa(refs_msa_path)
     recombination_distribution=np.zeros(l_msa,dtype=int)
@@ -107,20 +109,20 @@ if __name__ == "__main__":
                 c_useful_alignments+=1
 
                 '''
-                plot_path = f"test/results/plots/MAFFT_reads/{population}_{timestep}_{c_tot_alignments}.png"
+                plot_path = f"test/plots/MAFFT_reads/{population}_{timestep}_{c_tot_alignments}.png"
 
                 hmm_plot, (evidences, prediction) = plt.subplots(2, 1, figsize=(10, 5))
                 hmm_plot.suptitle(f'HMM read {c_tot_alignments}, {population}, t{timestep}')
 
-                colours = np.where(e_distribution_to_plot == 0, "green", np.where(e_distribution_to_plot == 1, "red", np.where(e_distribution_to_plot == 2, "orange", "blue")))
+                colours = np.where(e_distribution_to_plot == 0, "green", np.where(e_distribution_to_plot == 1, "red", np.where(e_distribution_to_plot == 2, "blue", "orange")))
                 evidences.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), e_distribution_to_plot, c=colours, marker='|', alpha=0.5)
-                evidences.set_title('evidence distribution (0:same, 1:err, 2:a, 3:b)')
+                evidences.set_title(f'evidence distribution (0=same, 1=error, 2=evidence for {references[0]}, 3=evidence for {references[1]})')
                 evidences.set_xlabel("basepair")
                 evidences.set_ylabel("visible states")
 
-                colours = np.where(hmm_prediction == 0, "orange", "blue")
+                colours = np.where(hmm_prediction == 0, "blue", "orange")
                 prediction.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), hmm_prediction, c=colours, marker='|', alpha=0.5)
-                prediction.set_title(f'HMM prediction (0:A, 1:B)')
+                prediction.set_title(f'HMM prediction (0={references[0]}, 1={references[1]})')
                 prediction.set_xlabel("basepair")
                 prediction.set_ylabel("hidden states")
 

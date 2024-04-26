@@ -69,3 +69,10 @@ def add_to_msa(msa_path,seq,mapping_start,mapping_end):
 def length_msa(msa_path):
     alignment = AlignIO.read(open(msa_path), "fasta")
     return alignment.get_alignment_length()
+
+def extract_references_names(msa_path):
+    alignment = AlignIO.read(open(msa_path), "fasta")
+    names=[]
+    for record in alignment:
+        names.append(record.id)
+    return names

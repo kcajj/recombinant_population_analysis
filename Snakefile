@@ -120,7 +120,7 @@ rule plot_recombination_array:
         recombination=rules.genomewide_recombination_array.output.genomewide_recombination,
         coverage=rules.evidence_arrays.output.coverage
     output:
-        plots='results/plots/{population}/total/{population}_{timestep}.png'
+        plots='results/plots/{population}/total_recombination/{population}_{timestep}.png'
     conda:
         'conda_envs/scientific_python.yml'
     shell:
@@ -135,9 +135,10 @@ rule plot_directional_recombination:
     input:
         recombination_01=rules.genomewide_recombination_array.output.genomewide_recombination_01,
         recombination_10=rules.genomewide_recombination_array.output.genomewide_recombination_10,
-        coverage=rules.evidence_arrays.output.coverage
+        coverage=rules.evidence_arrays.output.coverage,
+        msa = rules.msa.output.msa
     output:
-        plots='results/plots/{population}/directional/{population}_{timestep}.png'
+        plots='results/plots/{population}/directional_recombination/{population}_{timestep}.png'
     conda:
         'conda_envs/scientific_python.yml'
     shell:
@@ -146,10 +147,28 @@ rule plot_directional_recombination:
             --recombination_01 {input.recombination_01} \
             --recombination_10 {input.recombination_10} \
             --coverage {input.coverage} \
+            --msa_refs {input.msa} \
+            --out {output.plots}
+        """
+
+rule plot_references_coverage:
+    input:
+        predictions=rules.prediction_arrays.output.predictions,
+        msa = rules.msa.output.msa
+    output:
+        plots='results/plots/{population}/references_coverage/{population}_{timestep}.png',
+    conda:
+        'conda_envs/scientific_python.yml'
+    shell:
+        """
+        python scripts/plot_references_coverage.py \
+            --predictions {input.predictions} \
+            --msa_refs {input.msa} \
             --out {output.plots}
         """
 
 rule all:
     input:
         plots=expand(rules.plot_recombination_array.output.plots, population=["P2","P3"], timestep=["1","3","5","7"]),
-        directional_plots=expand(rules.plot_directional_recombination.output.plots, population=["P2","P3"], timestep=["1","3","5","7"])
+        directional_plots=expand(rules.plot_directional_recombination.output.plots, population=["P2","P3"], timestep=["1","3","5","7"]),
+        coverage_plots=expand(rules.plot_references_coverage.output.plots, population=["P2","P3"], timestep=["1","3","5","7"])

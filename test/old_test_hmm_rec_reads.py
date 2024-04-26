@@ -1,5 +1,5 @@
 import numpy as np
-from handle_msa import get_evidences_distributions, add_to_msa, length_msa
+from handle_msa import get_evidences_distributions, add_to_msa, length_msa, extract_references_names
 from viterbi import viterbi_algorithm
 import pysam
 import time
@@ -28,11 +28,13 @@ if __name__ == "__main__":
     population='P2'
     timestep='7'
 
-    refs_msa_path="results/msa/refs_msa.fasta"
+    refs_msa_path="test/results/msa/msa_refs.fasta"
 
     bam_file=f"data/test/hybrid_test_{population}_{timestep}.bam"
 
     output_path=f"test/results/genomewide_recombination_arrays/test_{population}_{timestep}.npz"
+
+    references=extract_references_names(refs_msa_path)
 
     l_msa=length_msa(refs_msa_path)
     recombination_distribution=np.zeros(l_msa,dtype=int)
@@ -86,20 +88,20 @@ if __name__ == "__main__":
                 c_useful_alignments+=1
 
                 '''
-                plot_path = f"test/results/plots/strange_reads/{population}_{timestep}_{c_tot_alignments}.png"
+                plot_path = f"test/plots/reads/{population}_{timestep}_{c_tot_alignments}.png"
 
                 hmm_plot, (evidences, prediction) = plt.subplots(2, 1, figsize=(10, 5))
                 hmm_plot.suptitle(f'HMM read {c_tot_alignments}, {population}, t{timestep}')
 
-                colours = np.where(e_distribution_to_plot == 0, "green", np.where(e_distribution_to_plot == 1, "red", np.where(e_distribution_to_plot == 2, "orange", "blue")))
+                colours = np.where(e_distribution_to_plot == 0, "green", np.where(e_distribution_to_plot == 1, "red", np.where(e_distribution_to_plot == 2, "blue", "orange")))
                 evidences.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), e_distribution_to_plot, c=colours, marker='|', alpha=0.5)
-                evidences.set_title('evidence distribution (0:same, 1:err, 2:a, 3:b)')
+                evidences.set_title(f'evidence distribution (0=same, 1=error, 2=evidence for {references[0]}, 3=evidence for {references[1]})')
                 evidences.set_xlabel("basepair")
                 evidences.set_ylabel("visible states")
 
-                colours = np.where(hmm_prediction == 0, "orange", "blue")
+                colours = np.where(hmm_prediction == 0, "blue", "orange")
                 prediction.scatter(range(mapping_start,len(e_distribution_to_plot)+mapping_start), hmm_prediction, c=colours, marker='|', alpha=0.5)
-                prediction.set_title(f'HMM prediction (0:A, 1:B)')
+                prediction.set_title(f'HMM prediction (0={references[0]}, 1={references[1]})')
                 prediction.set_xlabel("basepair")
                 prediction.set_ylabel("hidden states")
 
