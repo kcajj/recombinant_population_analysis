@@ -129,4 +129,4 @@ rule plot_recombination_array:
 
 rule all:
     input:
-        plots=expand(rules.plot_recombination_array.output.plots, population="P2", timestep="7")
+        plots=expand(rules.plot_recombination_array.output.plots, population=["P2","P3"], timestep=["1","3","5","7"])
