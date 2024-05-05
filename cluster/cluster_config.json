@@ -11,10 +11,10 @@
         "n": 4,
         "mem": "8G"
     },
-    "recombination_array": {
+    "prediction_arrays": {
         "time": "05:59:00",
         "qos": "6hours",
         "n": 20,
-        "mem": "16G"
+        "mem": "20G"
     }
 }
