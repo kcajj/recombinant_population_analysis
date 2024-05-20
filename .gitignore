@@ -1,7 +1,6 @@
 data/
 __pycache__/
-results/alignments/
-results/evidence_arrays/
-results/prediction_arrays/
+results/
 log/
 .snakemake/
+thesis/

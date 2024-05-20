@@ -57,4 +57,11 @@
             - [x] array with position of recombination events in the reference genome
     - [x] representing whole-population recombination data
 
-- [ ] pipeline
+- [x] pipeline
+    - [x] plots of directional recombination
+        - [ ] put a threshold on the coverage
+    - [x] plots of coverage
+
+- [ ] extract the ranking of sites
+- [ ] time dynamics plots
+- [ ] correct coordinates
