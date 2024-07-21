@@ -96,3 +96,4 @@ reads used 67274
 
 we add a Snakefile, config.yaml file, cluster folder, conda_envs folder, local folder and log folder.
 
+The scripts produced so far were adapted to work in a pipeline.
