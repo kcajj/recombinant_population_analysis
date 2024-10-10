@@ -12,7 +12,43 @@ The main use of this repository processes the data produced by an [Aionostat](ht
 
 You can run the pipeline by properly setting up the [run_config.yml](/run_config.yml) file and by creating a folder with the input data.
 
-instructions...
+## Input folder
+
+The input folder should have the following structure:
+
+data/
+    reads/
+        [replicate_code]_[timestep_code].fastq.gz
+        ...
+    references.fasta
+
+Each fastq file should be named with two codes, one identifying the experimental replicate and one progressively numbering successive timestep (in case of a time series analysis).
+
+The two reference genomes should be included in the same fasta file named "references.fasta".
+
+## run_config.yml
+
+The run_config file has 4 sections:
+
+- run_config: describes the file configuration of the pipeline run. Write down the name of the two references and of the replicates and timesteps that have to be analyzed.
+
+- alignments: set the length threshold below which the reads will be ignored.
+
+- HMM: define the HMM parameters
+
+- plots: set the coverage threshold below which no inference will be carried out.
+
+# Running the pipeline
+
+## local 
+
+<pre>
+snakemake --profile local --configfile run_config.yml
+</pre>
+
+<pre>
+snakemake --profile cluster --configfile run_config.yml
+</pre>
 
 # Ouput
 
