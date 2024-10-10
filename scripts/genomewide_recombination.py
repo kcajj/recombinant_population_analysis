@@ -2,6 +2,7 @@ import numpy as np
 from handle_msa import length_msa
 import csv
 import sys
+from array_compression import decompress_array, retrive_compressed_array_from_str
 
 def get_recombination_array(predictions_file, refs_msa_path):
 
@@ -19,8 +20,9 @@ def get_recombination_array(predictions_file, refs_msa_path):
             mapping_start=int(line[1])
             #mapping_end=int(line[2])
             log_lik=float(line[3])
-            prediction_array_str=line[4][1:-1].split(' ')
-            prediction_array=np.array([int(e) for e in prediction_array_str])
+            
+            compressed_prediction_array=retrive_compressed_array_from_str(line[4])
+            prediction_array=decompress_array(compressed_prediction_array)
 
             tot_log_lik+=log_lik
 

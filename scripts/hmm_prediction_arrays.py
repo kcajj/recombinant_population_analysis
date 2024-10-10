@@ -5,6 +5,7 @@ import csv
 import sys
 from multiprocessing import Pool
 from itertools import repeat
+from array_compression import decompress_array, retrive_compressed_array_from_str, compress_array
 
 def build_matrix(input):
     matrix=[]
@@ -30,8 +31,9 @@ def get_evidence_arrays(evidences_file):
             read_name=line[0]
             mapping_start=int(line[1])
             mapping_end=int(line[2])
-            evidence_array_str=line[3][1:-1].split(' ')
-            evidence_array=np.array([int(e) for e in evidence_array_str])
+            
+            compressed_evidence_array=retrive_compressed_array_from_str(line[3])
+            evidence_array=decompress_array(compressed_evidence_array)
 
             read_names.append(read_name)
             evidence_arrays.append(evidence_array)
@@ -51,8 +53,10 @@ def write_prediction_arrays(output_path, results, read_names, mapping_starts, ma
             mapping_start = mapping_starts[i]
             mapping_end = mapping_ends[i]
 
+            compressed_hmm_prediction = compress_array(hmm_prediction)
+
             np.set_printoptions(threshold=np.inf,linewidth=np.inf)
-            writer.writerow([read_name, mapping_start, mapping_end, log_lik, hmm_prediction])
+            writer.writerow([read_name, mapping_start, mapping_end, log_lik, compressed_hmm_prediction])
 
 if __name__ == "__main__":
 
@@ -99,4 +103,4 @@ if __name__ == "__main__":
         f.write("prediction arrays run of "+evidences_file+'\n')
         f.write("total time "+str(tot_t)+'\n')
         f.write("total reads "+str(c_reads)+'\n')
-        f.write("time per read "+str(tot_t/c_reads)+'\n')
+        #f.write("time per read "+str(tot_t/c_reads)+'\n')

@@ -76,3 +76,7 @@ def extract_references_names(msa_path):
     for record in alignment:
         names.append(record.id)
     return names
+
+def length_seq(seq_path):
+    seq = SeqIO.read(seq_path, "fasta")
+    return len(seq.seq)

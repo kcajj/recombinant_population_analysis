@@ -1,0 +1,44 @@
+run_config:
+  input: "data"
+  output: "results"
+  HMM:
+    references:
+      - 'EM11'
+      - 'EM60'
+    replicates:
+      - 'P1'
+      - 'P2'
+      - 'P3'
+      - 'P4'
+    timesteps:
+      - 'D1'
+      - 'D2'
+      - 'D4'
+      - 'D6'
+      - 'D8'
+      - 'D10'
+alignments:
+  length_threshold: 0
+HMM_parameters:
+  cores: 20
+  initial_probability:
+    A: "0.5"
+    B: "0.5"
+  transition_probability:
+    A:
+      A: "0.99999"
+      B: "0.00001"
+    B:
+      A: "0.00001"
+      B: "0.99999"
+  emission_probability:
+    A:
+      0: "0.967"
+      1: "0.03"
+      2: "0.003"
+    B:
+      0: "0.967"
+      1: "0.003"
+      2: "0.03"
+plots:
+  coverage_threshold: 0

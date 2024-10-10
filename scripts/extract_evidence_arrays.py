@@ -3,6 +3,7 @@ from handle_msa import length_msa, get_evidences_distributions, add_to_msa
 import pysam
 import time
 import csv
+from array_compression import compress_array
 
 def write_evidence_arrays(bam_file, refs_msa_path, output_evidences_path, output_coverage_path, length_threshold):
 
@@ -46,9 +47,10 @@ def write_evidence_arrays(bam_file, refs_msa_path, output_evidences_path, output
                         e_distribution_to_plot = get_evidences_distributions(msa_matrix)
 
                         e_distribution = np.where(e_distribution_to_plot > 0, e_distribution_to_plot-1, e_distribution_to_plot)
-                        
+                        compressed_e_distribution = compress_array(e_distribution)
+
                         np.set_printoptions(threshold=np.inf,linewidth=np.inf)
-                        writer.writerow([read.query_name, mapping_start, mapping_end, e_distribution])
+                        writer.writerow([read.query_name, mapping_start, mapping_end, compressed_e_distribution])
 
                         end_time=time.time()
                         time_spent_per_read.append(end_time-start_time)

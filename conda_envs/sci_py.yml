@@ -1,4 +1,4 @@
-name: scientific_python
+name: sci_py
 channels:
   - bioconda
   - conda-forge
