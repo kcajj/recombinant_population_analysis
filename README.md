@@ -8,6 +8,12 @@ The main use of this repository processes the data produced by an [Aionostat](ht
 - The two ancestral species have to be fairly similar, allowing homologous recombination.
 - Only homologous recombination is detected
 
+The pipeline follows the following schematic workflow:
+
+
+
+The two references corresponding to the ancestral phages are combined in a hybrid reference. This reference can be used to align the reads of the recombinant population with minimap2. For each read, the obtained alignment is approximated as being the MSA of the 2 references + the recombinant read. From the MSA the evidences of the read belonging to ancestral sequence 1 or 2 are extracted and feeded to the HMM model. To have more details on the HMM model see [here](documentation/hmm.md)
+
 # Configuration
 
 You can run the pipeline by properly setting up the [run_config.yml](/run_config.yml) file and by creating a folder with the input data.
@@ -32,19 +38,21 @@ The run_config file has 4 sections:
 
 - run_config: describes the file configuration of the pipeline run. Write down the name of the two references and of the replicates and timesteps that have to be analyzed.
 
-- alignments: set the length threshold below which the reads will be ignored.
+- alignments: set the length threshold below which the reads will be ignored and not aligned to the hybrid reference.
 
-- HMM: define the HMM parameters
+- HMM: define the HMM parameters. To have more details see [here](documentation/hmm.md)
 
-- plots: set the coverage threshold below which no inference will be carried out.
+- plots: set the coverage threshold below which the inferences carried out on the site will not be shown in the plots.
 
 # Running the pipeline
 
-## local 
+## Local execution
 
 <pre>
 snakemake --profile local --configfile run_config.yml
 </pre>
+
+## HPC execution 
 
 <pre>
 snakemake --profile cluster --configfile run_config.yml
@@ -52,4 +60,17 @@ snakemake --profile cluster --configfile run_config.yml
 
 # Ouput
 
-We produced a pipeline that carries out the whole analysis, yielding the plots of the coverage of the genomes of the two phages for each timestep of the experiment.
+Two plots are produced by the pipeline:
+
+## Coverage plot
+
+After gathering the inference carried out on all reads, for each site of the hybrid reference the fraction of reads assigned to ancestral sequence 1 and 2 is plotted.
+
+Example:
+
+
+## Recombination plot
+
+After gathering the inference carried out on all reads, all the recombination events (i.e. position of a recombinant read where it is inferred the switch from a reference to the other) are plotted on the hybrid reference genome, normalised for the total amount of reads mapped on each position.
+
+Example:
