@@ -9,7 +9,6 @@ run_config:
       - 'P1'
       - 'P2'
       - 'P3'
-      - 'P4'
     timesteps:
       - 'D1'
       - 'D2'
@@ -18,7 +17,7 @@ run_config:
       - 'D8'
       - 'D10'
 alignments:
-  length_threshold: 0
+  length_threshold: 5000
 HMM_parameters:
   cores: 20
   initial_probability:
@@ -41,4 +40,4 @@ HMM_parameters:
       1: "0.003"
       2: "0.03"
 plots:
-  coverage_threshold: 0
+  coverage_threshold: 10

@@ -1,27 +1,29 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 SMALL_SIZE = 20
 MEDIUM_SIZE = 25
 BIGGER_SIZE = 30
 
-plt.rc('font', size=MEDIUM_SIZE)          # controls default text sizes
-plt.rc('axes', titlesize=MEDIUM_SIZE)     # fontsize of the axes title
-plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
-plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('legend', fontsize=MEDIUM_SIZE)    # legend fontsize
-plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+plt.rc("font", size=MEDIUM_SIZE)  # controls default text sizes
+plt.rc("axes", titlesize=MEDIUM_SIZE)  # fontsize of the axes title
+plt.rc("axes", labelsize=MEDIUM_SIZE)  # fontsize of the x and y labels
+plt.rc("xtick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
+plt.rc("ytick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
+plt.rc("legend", fontsize=MEDIUM_SIZE)  # legend fontsize
+plt.rc("figure", titlesize=BIGGER_SIZE)  # fontsize of the figure title
+
 
 def npz_extract(npz_file):
-    npz=np.load(npz_file)
-    lst=npz.files
+    npz = np.load(npz_file)
+    lst = npz.files
     for item in lst:
-        array=npz[item]
+        array = npz[item]
     return array
 
-#to convert genome coordinates from hybrid to reference:
-'''
+
+# to convert genome coordinates from hybrid to reference:
+"""
 def get_hyb_ref_map(bam_file):
     map_hyb_ref={}
     with pysam.AlignmentFile(bam_file, "rb") as bam:
@@ -39,19 +41,22 @@ def get_hyb_ref_map(bam_file):
                     else:
                         map_hyb_ref[hyb]=ref
     return map_hyb_ref
-'''
+"""
 
-def plot_recombination_dynamics(timesteps,recombination_folder,coverage_folder,references,coverage_threshold,output_path):
+
+def plot_recombination_dynamics(
+    timesteps, recombination_folder, coverage_folder, references, coverage_threshold, output_path
+):
     figure, subplots = plt.subplots(len(timesteps), 1, figsize=(20, 15), sharex=True)
-    
-    #if you want to get converted genome coordinates from hybrid to reference
-    #bas51_map=get_hyb_ref_map("thesis/alignments/hybrid_on_bas51.bam")
+
+    # if you want to get converted genome coordinates from hybrid to reference
+    # bas51_map=get_hyb_ref_map("thesis/alignments/hybrid_on_bas51.bam")
 
     for timestep in timesteps:
-        recombination_path=f"{recombination_folder}/{timestep}.npz"
-        recombination_01_path=f"{recombination_folder}/{timestep}_01.npz"
-        recombination_10_path=f"{recombination_folder}/{timestep}_10.npz"
-        coverage_array_path=f"{coverage_folder}/{timestep}.npz"
+        recombination_path = f"{recombination_folder}/{timestep}.npz"
+        recombination_01_path = f"{recombination_folder}/{timestep}_01.npz"
+        recombination_10_path = f"{recombination_folder}/{timestep}_10.npz"
+        coverage_array_path = f"{coverage_folder}/{timestep}.npz"
 
         recombination_distribution = npz_extract(recombination_path)
         recombination_distribution_01 = npz_extract(recombination_01_path)
@@ -59,8 +64,8 @@ def plot_recombination_dynamics(timesteps,recombination_folder,coverage_folder,r
 
         coverage = npz_extract(coverage_array_path)
 
-        #convert genome coordinates
-        '''
+        # convert genome coordinates
+        """
         converted_recombination = np.zeros_like(recombination_distribution)
         converted_recombination_01 = np.zeros_like(recombination_distribution_01)
         converted_recombination_10 = np.zeros_like(recombination_distribution_10)
@@ -75,13 +80,28 @@ def plot_recombination_dynamics(timesteps,recombination_folder,coverage_folder,r
         normalised_converted = np.divide(converted_recombination.astype(float), converted_coverage.astype(float), out=np.zeros_like(converted_recombination.astype(float)), where=converted_coverage.astype(float)!=0)
         normalised_converted_01 = np.divide(converted_recombination_01.astype(float), converted_coverage.astype(float), out=np.zeros_like(converted_recombination_01.astype(float)), where=converted_coverage.astype(float)!=0)
         normalised_converted_10 = np.divide(converted_recombination_10.astype(float), converted_coverage.astype(float), out=np.zeros_like(converted_recombination_10.astype(float)), where=converted_coverage.astype(float)!=0)
-        '''
-        normalised = np.divide(recombination_distribution.astype(float), coverage.astype(float), out=np.zeros_like(recombination_distribution.astype(float)), where=coverage.astype(float)!=0)
-        normalised_01 = np.divide(recombination_distribution_01.astype(float), coverage.astype(float), out=np.zeros_like(recombination_distribution_01.astype(float)), where=coverage.astype(float)!=0)
-        normalised_10 = np.divide(recombination_distribution_10.astype(float), coverage.astype(float), out=np.zeros_like(recombination_distribution_10.astype(float)), where=coverage.astype(float)!=0)
+        """
+        normalised = np.divide(
+            recombination_distribution.astype(float),
+            coverage.astype(float),
+            out=np.zeros_like(recombination_distribution.astype(float)),
+            where=coverage.astype(float) != 0,
+        )
+        normalised_01 = np.divide(
+            recombination_distribution_01.astype(float),
+            coverage.astype(float),
+            out=np.zeros_like(recombination_distribution_01.astype(float)),
+            where=coverage.astype(float) != 0,
+        )
+        normalised_10 = np.divide(
+            recombination_distribution_10.astype(float),
+            coverage.astype(float),
+            out=np.zeros_like(recombination_distribution_10.astype(float)),
+            where=coverage.astype(float) != 0,
+        )
 
         # get the highest values: recombination hotspots
-        '''
+        """
         threshold_frequency=0.01
         with open(f"thesis/plots/hot_sites_{population}.txt","a") as file:
             sorted_indices = np.argsort(normalised_converted)[::-1]
@@ -94,7 +114,7 @@ def plot_recombination_dynamics(timesteps,recombination_folder,coverage_folder,r
             file.write(f"{population} {timestep}\n")
             file.write(f"Values: {np.around(highest_values,decimals=4)}\n")
             file.write(f"Indices: {highest_indices}\n")
-        '''
+        """
 
         # mask out the positions with coverage below the threshold
         mask = [i < coverage_threshold for i in coverage]
@@ -107,10 +127,13 @@ def plot_recombination_dynamics(timesteps,recombination_folder,coverage_folder,r
         subplots[timesteps.index(timestep)].plot(masked_normalised_10, alpha=1, linewidth=3)
         subplots[timesteps.index(timestep)].set_title(f"timestep {timestep}")
         subplots[timesteps.index(timestep)].set_ylabel("recombination \n frequency")
-        figure.legend([f"from {references[0]} to {references[1]}",f"from {references[1]} to {references[0]}"], loc='upper right')
+        figure.legend(
+            [f"from {references[0]} to {references[1]}", f"from {references[1]} to {references[0]}"], loc="upper right"
+        )
         plt.xlabel("genome position")
-        
-    figure.savefig(output_path, dpi=600)
+
+    figure.savefig(output_path, format="pdf")
+
 
 if __name__ == "__main__":
 
@@ -128,11 +151,13 @@ if __name__ == "__main__":
     parser.add_argument("--out", help="output path of the plots")
 
     args = parser.parse_args()
-    recombination_folder=args.recombination
-    coverage_folder=args.coverage
-    timesteps=args.timesteps.split(",")[:-1]
-    references=args.references.split(",")[:-1]
-    coverage_threshold=int(args.coverage_threshold)
-    output_path=args.out
-    
-    plot_recombination_dynamics(timesteps,recombination_folder,coverage_folder,references,coverage_threshold,output_path)
+    recombination_folder = args.recombination
+    coverage_folder = args.coverage
+    timesteps = args.timesteps.split(",")[:-1]
+    references = args.references.split(",")[:-1]
+    coverage_threshold = int(args.coverage_threshold)
+    output_path = args.out
+
+    plot_recombination_dynamics(
+        timesteps, recombination_folder, coverage_folder, references, coverage_threshold, output_path
+    )
