@@ -103,4 +103,5 @@ if __name__ == "__main__":
         f.write("prediction arrays run of "+evidences_file+'\n')
         f.write("total time "+str(tot_t)+'\n')
         f.write("total reads "+str(c_reads)+'\n')
-        f.write("time per read "+str(tot_t/c_reads)+'\n')
+        if c_reads > 0:
+            f.write("time per read "+str(tot_t/c_reads)+'\n')
