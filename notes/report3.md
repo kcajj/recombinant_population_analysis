@@ -13,3 +13,11 @@ I am still working on the pipeline because we will publish a paper
 - implementation of a system to compress and decompress arrays. this will make the pipeline more space efficient.
 
 - prettyfying the pipeline to make it usable from more people, hiding thesis-specific stuff and exploratory scripts.
+
+## Unique plot
+
+We want to add a combination of the two plots to put it in the paper.
+
+1. we plot only one coverage line and color above and below it
+
+2. we plot the recombination frequency on top of the coverage

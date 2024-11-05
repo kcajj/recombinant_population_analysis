@@ -40,4 +40,4 @@ HMM_parameters:
       1: "0.003"
       2: "0.03"
 plots:
-  coverage_threshold: 10
+  coverage_threshold: 0
