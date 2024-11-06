@@ -25,11 +25,11 @@ HMM_parameters:
     B: "0.5"
   transition_probability:
     A:
-      A: "0.99999"
-      B: "0.00001"
+      A: "0.99996"
+      B: "0.00004"
     B:
-      A: "0.00001"
-      B: "0.99999"
+      A: "0.00004"
+      B: "0.99996"
   emission_probability:
     A:
       0: "0.967"
