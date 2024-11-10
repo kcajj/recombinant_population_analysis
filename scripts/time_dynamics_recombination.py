@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from array_compression import npz_extract
 
 SMALL_SIZE = 20
 MEDIUM_SIZE = 25
@@ -12,14 +13,6 @@ plt.rc("xtick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
 plt.rc("ytick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
 plt.rc("legend", fontsize=MEDIUM_SIZE)  # legend fontsize
 plt.rc("figure", titlesize=BIGGER_SIZE)  # fontsize of the figure title
-
-
-def npz_extract(npz_file):
-    npz = np.load(npz_file)
-    lst = npz.files
-    for item in lst:
-        array = npz[item]
-    return array
 
 
 # to convert genome coordinates from hybrid to reference:
@@ -56,13 +49,13 @@ def plot_recombination_dynamics(
         recombination_path = f"{recombination_folder}/{timestep}.npz"
         recombination_01_path = f"{recombination_folder}/{timestep}_01.npz"
         recombination_10_path = f"{recombination_folder}/{timestep}_10.npz"
-        coverage_array_path = f"{coverage_folder}/{timestep}.npz"
+        coverage_path = f"{coverage_folder}/{timestep}.npz"
 
         recombination_distribution = npz_extract(recombination_path)
         recombination_distribution_01 = npz_extract(recombination_01_path)
         recombination_distribution_10 = npz_extract(recombination_10_path)
 
-        coverage = npz_extract(coverage_array_path)
+        coverage = npz_extract(coverage_path)
 
         # convert genome coordinates
         """

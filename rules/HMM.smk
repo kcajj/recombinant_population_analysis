@@ -56,7 +56,6 @@ rule evidence_arrays:
         msa = rules.msa.output.msa
     output:
         evidences = out_fld + '/evidence_arrays/{replicate}/{timestep}.tsv',
-        coverage = out_fld + '/coverage_arrays/{replicate}/{timestep}.npz'
     conda:
         '../conda_envs/sci_py.yml'
     params:
@@ -67,16 +66,16 @@ rule evidence_arrays:
             --bam {input.bam} \
             --msa_refs {input.msa} \
             --evidences_out {output.evidences} \
-            --coverage_out {output.coverage} \
             --length_threshold {params.length_threshold}
         """
 
 rule prediction_arrays:
     input:
         evidences = rules.evidence_arrays.output.evidences,
-        msa = rules.msa.output.msa
+        hybrid_ref = rules.hybrid_ref.output.hybrid_ref
     output:
         predictions = out_fld + '/prediction_arrays/{replicate}/{timestep}.tsv',
+        coverage = out_fld + '/coverage_arrays/{replicate}/{timestep}.npz'
     conda:
         '../conda_envs/sci_py.yml'
     params:
@@ -88,8 +87,9 @@ rule prediction_arrays:
         """
         python scripts/hmm_prediction_arrays.py \
             --evidences {input.evidences} \
-            --msa_refs {input.msa} \
-            --out {output.predictions} \
+            --hybrid_ref {input.hybrid_ref} \
+            --predictions_out {output.predictions} \
+            --coverage_out {output.coverage} \
             --cores {params.cores} \
             --initial_p {params.initial_probability}\
             --transition_p {params.transition_probability}\
@@ -99,7 +99,7 @@ rule prediction_arrays:
 rule genomewide_recombination_array:
     input:
         predictions = rules.prediction_arrays.output.predictions,
-        msa = rules.msa.output.msa
+        hybrid_ref = rules.hybrid_ref.output.hybrid_ref
     output:
         genomewide_recombination = out_fld + '/genomewide_recombination/{replicate}/{timestep}.npz',
         genomewide_recombination_01 = out_fld + '/genomewide_recombination/{replicate}/{timestep}_01.npz',
@@ -110,7 +110,7 @@ rule genomewide_recombination_array:
         """
         python scripts/genomewide_recombination.py \
             --predictions {input.predictions} \
-            --msa_refs {input.msa} \
+            --hybrid_ref {input.hybrid_ref} \
             --out {output.genomewide_recombination} \
             --out_01 {output.genomewide_recombination_01} \
             --out_10 {output.genomewide_recombination_10}

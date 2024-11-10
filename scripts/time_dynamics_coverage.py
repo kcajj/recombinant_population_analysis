@@ -1,10 +1,6 @@
-import csv
-import sys
-
 import matplotlib.pyplot as plt
 import numpy as np
-from array_compression import decompress_array, retrive_compressed_array_from_str
-from handle_msa import length_seq
+from array_compression import npz_extract
 
 SMALL_SIZE = 20
 MEDIUM_SIZE = 25
@@ -19,42 +15,17 @@ plt.rc("legend", fontsize=MEDIUM_SIZE)  # legend fontsize
 plt.rc("figure", titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
 
-def get_references_coverage(predictions_file, hybrid_ref_path):
-
-    csv.field_size_limit(sys.maxsize)
-
-    coverage = np.zeros(length_seq(hybrid_ref_path), dtype=int)
-    coverage0 = np.zeros(length_seq(hybrid_ref_path), dtype=int)
-    coverage1 = np.zeros(length_seq(hybrid_ref_path), dtype=int)
-
-    with open(predictions_file) as file:
-        tsv_file = csv.reader(file, delimiter="\t")
-        for line in tsv_file:
-            # read_name=line[0]
-            mapping_start = int(line[1])
-            # mapping_end=int(line[2])
-            # log_lik=float(line[3])
-
-            compressed_prediction_array = retrive_compressed_array_from_str(line[4])
-            prediction_array = decompress_array(compressed_prediction_array)
-
-            for i in range(len(prediction_array)):
-                coverage[mapping_start + i] += 1
-                if prediction_array[i] == 0:
-                    coverage0[mapping_start + i] += 1
-                else:
-                    coverage1[mapping_start + i] += 1
-
-    return coverage, coverage0, coverage1
-
-
-def plot_coverage_dynamics(timesteps, prediction_folder, hybrid_ref_path, references, coverage_threshold, output_path):
+def plot_coverage_dynamics(timesteps, coverage_folder, hybrid_ref_path, references, coverage_threshold, output_path):
     figure, subplots = plt.subplots(len(timesteps), 1, figsize=(20, 15), sharex=True, sharey=True)
 
     for timestep in timesteps:
-        predictions_file = f"{prediction_folder}/{timestep}.tsv"
+        coverage_path = f"{coverage_folder}/{timestep}.npz"
+        coverage_0_path = f"{coverage_folder}/{timestep}_0.npz"
+        coverage_1_path = f"{coverage_folder}/{timestep}_1.npz"
 
-        coverage, coverage0, coverage1 = get_references_coverage(predictions_file, hybrid_ref_path)
+        coverage = npz_extract(coverage_path)
+        coverage0 = npz_extract(coverage_0_path)
+        coverage1 = npz_extract(coverage_1_path)
 
         normalised0 = np.divide(
             coverage0.astype(float),
@@ -95,7 +66,7 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--hybrid_ref", help="path of the hybrid reference")
-    parser.add_argument("--prediction", help="path of the folder containing prediction arrays")
+    parser.add_argument("--coverage", help="path of the folder containing coverage arrays")
     parser.add_argument("--timesteps", help="list of timesteps")
     parser.add_argument("--references", help="name of references")
     parser.add_argument("--coverage_threshold", help="coverage threshold")
@@ -103,10 +74,10 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     hybrid_ref_path = args.hybrid_ref
-    prediction_folder = args.prediction
+    coverage_folder = args.coverage
     timesteps = args.timesteps.split(",")[:-1]
     references = args.references.split(",")[:-1]
     coverage_threshold = int(args.coverage_threshold)
     output_path = args.out
 
-    plot_coverage_dynamics(timesteps, prediction_folder, hybrid_ref_path, references, coverage_threshold, output_path)
+    plot_coverage_dynamics(timesteps, coverage_folder, hybrid_ref_path, references, coverage_threshold, output_path)

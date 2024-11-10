@@ -1,16 +1,16 @@
 import numpy as np
-from handle_msa import length_msa
+from handle_msa import length_seq
 import csv
 import sys
 from array_compression import decompress_array, retrive_compressed_array_from_str
 
-def get_recombination_array(predictions_file, refs_msa_path):
+def get_recombination_array(predictions_file, hybrid_ref_path):
 
     csv.field_size_limit(sys.maxsize)
 
-    recombination_distribution=np.zeros(length_msa(refs_msa_path),dtype=int)
-    recombination_distribution_01=np.zeros(length_msa(refs_msa_path),dtype=int)
-    recombination_distribution_10=np.zeros(length_msa(refs_msa_path),dtype=int)
+    recombination_distribution=np.zeros(length_seq(hybrid_ref_path),dtype=int)
+    recombination_distribution_01=np.zeros(length_seq(hybrid_ref_path),dtype=int)
+    recombination_distribution_10=np.zeros(length_seq(hybrid_ref_path),dtype=int)
     tot_log_lik=0
 
     with open(predictions_file) as file:
@@ -48,19 +48,19 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--predictions", help="path of the .tsv file containing the prediction arrays")
-    parser.add_argument("--msa_refs", help="path of the msa between the references")
+    parser.add_argument("--hybrid_ref", help="path of the hybrid reference")
     parser.add_argument("--out", help="output path of the .npz file containing the recombination array")
     parser.add_argument("--out_01", help="output path of the .npz file containing the recombination array from 0 to 1")
     parser.add_argument("--out_10", help="output path of the .npz file containing the recombination array from 1 to 0")
 
     args = parser.parse_args()
     predictions_file=args.predictions
-    refs_msa_path=args.msa_refs
+    hybrid_ref_path=args.hybrid_ref
     output_path=args.out
     output_path_01=args.out_01
     output_path_10=args.out_10
 
-    recombination_distribution, recombination_distribution_01, recombination_distribution_10, tot_log_lik = get_recombination_array(predictions_file, refs_msa_path)
+    recombination_distribution, recombination_distribution_01, recombination_distribution_10, tot_log_lik = get_recombination_array(predictions_file, hybrid_ref_path)
 
     np.savez(output_path,recombination_distribution)
     np.savez(output_path_01,recombination_distribution_01)

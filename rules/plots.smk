@@ -8,7 +8,6 @@ input_references = ""
 for reference in HMM["references"]:
     input_references += reference + ","
 for replicate in HMM["replicates"]:
-    os.makedirs(f"{out_fld}/prediction_arrays/{replicate}/", exist_ok=True)
     os.makedirs(f"{out_fld}/genomewide_recombination/{replicate}/", exist_ok=True)
     os.makedirs(f"{out_fld}/coverage_arrays/{replicate}/", exist_ok=True)
 
@@ -16,7 +15,7 @@ for replicate in HMM["replicates"]:
 rule plot_coverage_dynamics:
     input:
         hybrid_ref=rules.hybrid_ref.output.hybrid_ref,
-        prediction_folder=directory(out_fld + "/prediction_arrays/{replicate}/"),
+        coverage_folder=directory(out_fld + "/coverage_arrays/{replicate}/"),
         wait=rules.HMM_all.output.finish,
     output:
         plots=out_fld + "/plots/coverage_dynamics/coverage_{replicate}.pdf",
@@ -30,7 +29,7 @@ rule plot_coverage_dynamics:
         """
         python scripts/time_dynamics_coverage.py \
             --hybrid_ref {input.hybrid_ref} \
-            --prediction {input.prediction_folder} \
+            --coverage {input.coverage_folder} \
             --timesteps {params.timesteps} \
             --references {params.references} \
             --coverage_threshold {params.coverage_threshold} \
@@ -66,7 +65,6 @@ rule plot_recombination_dynamics:
 rule unique_plot:
     input:
         hybrid_ref=rules.hybrid_ref.output.hybrid_ref,
-        prediction_folder=directory(out_fld + "/prediction_arrays/{replicate}/"),
         recombination_folder=directory(out_fld + "/genomewide_recombination/{replicate}/"),
         coverage_folder=directory(out_fld + "/coverage_arrays/{replicate}/"),
         wait=rules.HMM_all.output.finish,
@@ -82,7 +80,6 @@ rule unique_plot:
         """
         python scripts/unique_plot.py \
             --hybrid_ref {input.hybrid_ref} \
-            --prediction {input.prediction_folder} \
             --recombination {input.recombination_folder} \
             --coverage {input.coverage_folder} \
             --timesteps {params.timesteps} \

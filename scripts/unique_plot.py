@@ -58,7 +58,6 @@ def get_references_coverage(predictions_file, hybrid_ref_path):
 
 def plot_coverage_dynamics(
     timesteps,
-    prediction_folder,
     recombination_folder,
     coverage_folder,
     hybrid_ref_path,
@@ -69,16 +68,17 @@ def plot_coverage_dynamics(
     figure, subplots = plt.subplots(len(timesteps), 1, figsize=(20, 15), sharex=True, sharey=True)
 
     for timestep in timesteps:
-        predictions_file = f"{prediction_folder}/{timestep}.tsv"
+        coverage_path = f"{coverage_folder}/{timestep}.npz"
+        coverage_0_path = f"{coverage_folder}/{timestep}_0.npz"
+        coverage_1_path = f"{coverage_folder}/{timestep}_1.npz"
 
-        coverage, coverage0, coverage1 = get_references_coverage(predictions_file, hybrid_ref_path)
+        coverage = npz_extract(coverage_path)
+        coverage0 = npz_extract(coverage_0_path)
+        coverage1 = npz_extract(coverage_1_path)
 
         recombination_path = f"{recombination_folder}/{timestep}.npz"
-        coverage_array_path = f"{coverage_folder}/{timestep}.npz"
 
         recombination_distribution = npz_extract(recombination_path)
-
-        coverage = npz_extract(coverage_array_path)
 
         normalised_coverage = np.divide(
             coverage0.astype(float),
@@ -124,7 +124,6 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--hybrid_ref", help="path of the hybrid reference")
-    parser.add_argument("--prediction", help="path of the folder containing prediction arrays")
     parser.add_argument("--recombination", help="path to the folder containing the recombination arrays")
     parser.add_argument("--coverage", help="path to the folder containing the coverage arrays")
     parser.add_argument("--timesteps", help="list of timesteps")
@@ -134,7 +133,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     hybrid_ref_path = args.hybrid_ref
-    prediction_folder = args.prediction
     recombination_folder = args.recombination
     coverage_folder = args.coverage
     timesteps = args.timesteps.split(",")[:-1]
@@ -144,7 +142,6 @@ if __name__ == "__main__":
 
     plot_coverage_dynamics(
         timesteps,
-        prediction_folder,
         recombination_folder,
         coverage_folder,
         hybrid_ref_path,

@@ -6,6 +6,7 @@ import sys
 from multiprocessing import Pool
 from itertools import repeat
 from array_compression import decompress_array, retrive_compressed_array_from_str, compress_array
+from handle_msa import length_seq
 
 def build_matrix(input):
     matrix=[]
@@ -43,7 +44,12 @@ def get_evidence_arrays(evidences_file):
 
     return read_names, evidence_arrays, mapping_starts, mapping_ends, c_reads
 
-def write_prediction_arrays(output_path, results, read_names, mapping_starts, mapping_ends):
+def write_prediction_arrays(output_path, results, read_names, mapping_starts, mapping_ends, refs_msa_path, output_coverage_path):
+
+    coverage = np.zeros(length_seq(refs_msa_path), dtype=int)
+    coverage0 = np.zeros(length_seq(refs_msa_path), dtype=int)
+    coverage1 = np.zeros(length_seq(refs_msa_path), dtype=int)
+
     with open(output_path, 'w', newline='') as tsvfile:
         writer = csv.writer(tsvfile, delimiter='\t', lineterminator='\n')
         for i in range(len(results)):
@@ -53,10 +59,22 @@ def write_prediction_arrays(output_path, results, read_names, mapping_starts, ma
             mapping_start = mapping_starts[i]
             mapping_end = mapping_ends[i]
 
+            #update coverage
+            for j in range(len(hmm_prediction)):
+                coverage[mapping_start + j] += 1
+                if hmm_prediction[j] == 0:
+                    coverage0[mapping_start + j] += 1
+                else:
+                    coverage1[mapping_start + j] += 1
+
             compressed_hmm_prediction = compress_array(hmm_prediction)
 
             np.set_printoptions(threshold=np.inf,linewidth=np.inf)
             writer.writerow([read_name, mapping_start, mapping_end, log_lik, compressed_hmm_prediction])
+            
+    np.savez(output_coverage_path,coverage)
+    np.savez(output_coverage_path[:-4]+"_0.npz",coverage0)
+    np.savez(output_coverage_path[:-4]+"_1.npz",coverage1)
 
 if __name__ == "__main__":
 
@@ -67,8 +85,9 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("--evidences", help="path of the .tsv file containing the evidence arrays")
-    parser.add_argument("--msa_refs", help="path of the msa between the references")
-    parser.add_argument("--out", help="output path of the .npz file containing the recombination array")
+    parser.add_argument("--hybrid_ref", help="path of the hybrid reference")
+    parser.add_argument("--predictions_out", help="output path of the .npz file containing the recombination array")
+    parser.add_argument("--coverage_out", help="output path of the .npz file containing the coverage array")
     parser.add_argument("--cores", help="number of cores to use", type=int)
     parser.add_argument("--initial_p", help="initial probabilities of the HMM states")
     parser.add_argument("--transition_p", help="transition probabilities of the HMM states")
@@ -76,8 +95,9 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     evidences_file=args.evidences
-    refs_msa_path=args.msa_refs
-    output_path=args.out
+    hybrid_ref_path=args.hybrid_ref
+    output_predictions_path=args.predictions_out
+    output_coverage_path=args.coverage_out
     cores=args.cores
     initial_probability=args.initial_p
     transition_probability=args.transition_p
@@ -94,11 +114,12 @@ if __name__ == "__main__":
     with Pool(cores) as p:
         results = p.starmap(viterbi_algorithm, zip(evidence_arrays, repeat(transition_probability_matrix), repeat(emission_probability_matrix), repeat(initial_probability_matrix)))
 
-    write_prediction_arrays(output_path, results, read_names, mapping_starts, mapping_ends)
+    #write prediction arrays and coverage0 and coverage1 arrays
+    write_prediction_arrays(output_predictions_path, results, read_names, mapping_starts, mapping_ends, hybrid_ref_path, output_coverage_path)
     
     tot_t=time.time()-tot_t_start
 
-    output_stats_path=output_path[:-4]+"_stats.txt"
+    output_stats_path=output_predictions_path[:-4]+"_stats.txt"
     with open(output_stats_path, 'w') as f:
         f.write("prediction arrays run of "+evidences_file+'\n')
         f.write("total time "+str(tot_t)+'\n')
