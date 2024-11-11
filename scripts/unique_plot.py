@@ -3,7 +3,7 @@ import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
-from array_compression import decompress_array, retrive_compressed_array_from_str
+from array_compression import decompress_array, retrive_compressed_array_from_str, npz_extract
 from handle_msa import length_seq
 
 SMALL_SIZE = 20
@@ -17,14 +17,6 @@ plt.rc("xtick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
 plt.rc("ytick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
 plt.rc("legend", fontsize=MEDIUM_SIZE)  # legend fontsize
 plt.rc("figure", titlesize=BIGGER_SIZE)  # fontsize of the figure title
-
-
-def npz_extract(npz_file):
-    npz = np.load(npz_file)
-    lst = npz.files
-    for item in lst:
-        array = npz[item]
-    return array
 
 
 def get_references_coverage(predictions_file, hybrid_ref_path):
