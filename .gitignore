@@ -1,6 +1,6 @@
 data/
 __pycache__/
-results/
+results*
 log/
 .snakemake/
 tmp/
