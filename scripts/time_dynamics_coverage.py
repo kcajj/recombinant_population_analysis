@@ -16,6 +16,7 @@ plt.rc("figure", titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
 
 def plot_coverage_dynamics(timesteps, coverage_folder, hybrid_ref_path, references, coverage_threshold, output_path):
+
     figure, subplots = plt.subplots(len(timesteps), 1, figsize=(20, 15), sharex=True, sharey=True)
 
     for timestep in timesteps:

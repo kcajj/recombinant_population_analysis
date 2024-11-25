@@ -1,10 +1,6 @@
-import csv
-import sys
-
 import matplotlib.pyplot as plt
 import numpy as np
-from array_compression import decompress_array, retrive_compressed_array_from_str, npz_extract
-from handle_msa import length_seq
+from array_compression import npz_extract
 
 SMALL_SIZE = 20
 MEDIUM_SIZE = 25
@@ -17,35 +13,6 @@ plt.rc("xtick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
 plt.rc("ytick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
 plt.rc("legend", fontsize=MEDIUM_SIZE)  # legend fontsize
 plt.rc("figure", titlesize=BIGGER_SIZE)  # fontsize of the figure title
-
-
-def get_references_coverage(predictions_file, hybrid_ref_path):
-
-    csv.field_size_limit(sys.maxsize)
-
-    coverage = np.zeros(length_seq(hybrid_ref_path), dtype=int)
-    coverage0 = np.zeros(length_seq(hybrid_ref_path), dtype=int)
-    coverage1 = np.zeros(length_seq(hybrid_ref_path), dtype=int)
-
-    with open(predictions_file) as file:
-        tsv_file = csv.reader(file, delimiter="\t")
-        for line in tsv_file:
-            # read_name=line[0]
-            mapping_start = int(line[1])
-            # mapping_end=int(line[2])
-            # log_lik=float(line[3])
-
-            compressed_prediction_array = retrive_compressed_array_from_str(line[4])
-            prediction_array = decompress_array(compressed_prediction_array)
-
-            for i in range(len(prediction_array)):
-                coverage[mapping_start + i] += 1
-                if prediction_array[i] == 0:
-                    coverage0[mapping_start + i] += 1
-                else:
-                    coverage1[mapping_start + i] += 1
-
-    return coverage, coverage0, coverage1
 
 
 def plot_coverage_dynamics(
