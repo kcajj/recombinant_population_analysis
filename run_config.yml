@@ -44,8 +44,10 @@ HMM_parameters:
 
 optimization_recombination_parameter:
   flag: true
+  timesteps: #timestep data to use for optimization
+    - 'D10'
   values: '0.00001,0.00002,0.00003,0.00004,0.00005,0.00006,0.00008,0.0001' #comma separated values
-  subsample: 10000
+  subsample: 1000
 
 plots:
   coverage_threshold: 0

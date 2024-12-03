@@ -1,15 +1,19 @@
 import os
 
 plot_config = config["plots"]
+
 input_replicates = ""
 for replicate in HMM["replicates"]:
     input_replicates += replicate + ","
+
 input_timesteps = ""
 for timestep in HMM["timesteps"]:
     input_timesteps += timestep + ","
+
 input_references = ""
 for reference in HMM["references"]:
     input_references += reference + ","
+
 for replicate in HMM["replicates"]:
     os.makedirs(f"{out_fld}/genomewide_recombination/{replicate}/", exist_ok=True)
     os.makedirs(f"{out_fld}/coverage_arrays/{replicate}/", exist_ok=True)
@@ -92,6 +96,9 @@ rule unique_plot:
         """
 
 HMM_config = config["HMM_parameters"]
+optimization_timesteps = ""
+for timestep in config["optimization_recombination_parameter"]["timesteps"]:
+    optimization_timesteps += timestep + ","
 
 rule optimize_recombination_parameter:
     input:
@@ -104,7 +111,7 @@ rule optimize_recombination_parameter:
         '../conda_envs/sci_py.yml'
     params:
         replicates = input_replicates,
-        timesteps = input_timesteps,
+        timesteps = optimization_timesteps,
         cores = HMM_config["cores"],
         initial_probability = HMM_config["initial_probability"]["A"]+","+HMM_config["initial_probability"]["B"],
         transition_probability = config["optimization_recombination_parameter"]["values"],

@@ -110,7 +110,8 @@ if __name__ == "__main__":
                 evidence_arrays = [evidence_arrays[i] for i in idx]
                 mapping_starts = [mapping_starts[i] for i in idx]
                 mapping_ends = [mapping_ends[i] for i in idx]
-                tot_reads+=subsample
+            
+            tot_reads+=len(evidence_arrays)
 
             for prob in transition_probabilities:
 
