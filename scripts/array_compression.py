@@ -2,6 +2,12 @@ import numpy as np
 
 
 def compress_array(array):
+    """
+    Compress a numpy array by storing the number of consecutive occurances of each value.
+    For example, the array [1, 2, 2, 3, 3, 3, 4, 4, 4, 4] would be compressed to [(1, 1), (2, 2), (3, 3), (4, 4)].
+    :param array: The numpy array to compress
+    :return: The compressed array
+    """
     compressed_array = []
     previous = array[0]
     c = 0

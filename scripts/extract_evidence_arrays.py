@@ -7,7 +7,16 @@ from array_compression import compress_array
 
 
 def write_evidence_arrays(bam_file, refs_msa_path, output_evidences_path, length_threshold):
+    """
+    Extracts MSA recombination evidences from alignments of recombinant reads to a hybrid reference.
+    Writes the evidence data to a specified output file.
 
+    Parameters:
+    - bam_file: Path to the BAM file containing alignments.
+    - refs_msa_path: Path to the MSA between the references.
+    - output_evidences_path: Path to the output file where evidence arrays will be written.
+    - length_threshold: Minimum length of the alignment to be considered.
+    """
     time_spent_per_read = []
     tot_time_start = time.time()
     c_tot_alignments = 0

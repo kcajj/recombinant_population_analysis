@@ -99,7 +99,7 @@ rule optimize_recombination_parameter:
         evidences_folder = directory(out_fld + "/evidence_arrays/"),
         wait=rules.HMM_all.output.finish,
     output:
-        plot = out_fld + "/plots/parameter_optimization.pdf"
+        plot = out_fld + "/plots/hyperparameter_optimization/hyperparameter_optimization.pdf"
     conda:
         '../conda_envs/sci_py.yml'
     params:

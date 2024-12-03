@@ -4,12 +4,16 @@ import csv
 import sys
 from multiprocessing import Pool
 from itertools import repeat
-from array_compression import compress_array, decompress_array, retrive_compressed_array_from_str
+from array_compression import decompress_array, retrive_compressed_array_from_str
 from collections import defaultdict
 from matplotlib import pyplot as plt
+import time
 
 
 def build_matrix(input):
+    """
+    From a string of the form "1,2/3,4" returns a numpy matrix array [[1,2],[3,4]]
+    """
     matrix = []
     rows = input.split("/")
     for i in rows:
@@ -20,6 +24,9 @@ def build_matrix(input):
 
 
 def get_evidence_arrays(evidences_file):
+    """
+    Reads the evidence arrays from a tsv file and returns the ancestral names, evidence arrays, mapping starts and mapping ends
+    """
     csv.field_size_limit(sys.maxsize)
 
     ancestral_names = []
@@ -45,22 +52,6 @@ def get_evidence_arrays(evidences_file):
             c_reads += 1
 
     return ancestral_names, evidence_arrays, mapping_starts, mapping_ends, c_reads
-
-
-def write_prediction_arrays(output_path, results, read_names, mapping_starts, mapping_ends):
-    with open(output_path, "w", newline="") as tsvfile:
-        writer = csv.writer(tsvfile, delimiter="\t", lineterminator="\n")
-        for i in range(len(results)):
-            hmm_prediction = results[i][0]
-            log_lik = results[i][1]
-            read_name = read_names[i]
-            mapping_start = mapping_starts[i]
-            mapping_end = mapping_ends[i]
-
-            compressed_hmm_prediction = compress_array(hmm_prediction)
-
-            np.set_printoptions(threshold=np.inf, linewidth=np.inf)
-            writer.writerow([read_name, mapping_start, mapping_end, log_lik, compressed_hmm_prediction])
 
 
 if __name__ == "__main__":
@@ -96,6 +87,9 @@ if __name__ == "__main__":
     emission_probability_matrix = build_matrix(emission_probability)
     transition_probabilities.sort()
 
+    start=time.time()
+    tot_reads=0
+
     log_liks = defaultdict(dict)  # log likelihoods saved for each clone and population
     """
     keys: probability of recombination
@@ -108,18 +102,21 @@ if __name__ == "__main__":
             evidences_file = f"{evidences_folder}/{replicate}/{timestep}.tsv"
 
             read_names, evidence_arrays, mapping_starts, mapping_ends, c_reads = get_evidence_arrays(evidences_file)
-
-            if subsample<c_reads:
+            
+            # subsample the reads
+            if subsample < c_reads:
                 idx = np.random.choice(c_reads, subsample, replace=False)
                 read_names = [read_names[i] for i in idx]
                 evidence_arrays = [evidence_arrays[i] for i in idx]
                 mapping_starts = [mapping_starts[i] for i in idx]
                 mapping_ends = [mapping_ends[i] for i in idx]
+                tot_reads+=subsample
 
             for prob in transition_probabilities:
 
                 transition_probability_matrix = np.array([[1 - prob, prob], [prob, 1 - prob]])
 
+                # run the viterbi algorithm in parallel
                 with Pool(cores) as p:
                     results = p.starmap(
                         viterbi_algorithm,
@@ -131,12 +128,14 @@ if __name__ == "__main__":
                         ),
                     )
 
+                # sum log likelihoods of all the reads
                 tot_log_lik = 0
                 for i in range(len(results)):
                     hmm_prediction = results[i][0]
                     log_lik = results[i][1]
                     tot_log_lik += log_lik
 
+                #add total log likelihood corresponding to the probability value and replicate+timestep to the dictionary
                 log_liks[prob][f"{replicate}_{timestep}"] = tot_log_lik
 
     mean_log_liks = []
@@ -151,3 +150,12 @@ if __name__ == "__main__":
     plt.ylabel("log likelihood")
     plt.title("Optimization of the recombination parameter by log likelihood maximisation")
     plt.savefig(output_path, bbox_inches="tight")
+
+    # save the stats
+    output_folder = "/".join(output_path.split("/")[:-1])
+    with open(f"{output_folder}/hyperparameter_optimization_stats.txt", "w") as file:
+        file.write(f"Time taken to optimize the recombination hyperparameter: {time.time()-start} seconds.\n")
+        file.write(f"Optimal recombination probability: {transition_probabilities[np.argmax(mean_log_liks)]}.\n")
+        file.write(f"Optimal log likelihood: {np.max(mean_log_liks)}.\n")
+        file.write(f"Number of reads analysed: {tot_reads}.\n")
+        file.write(f"Time per read: {(time.time()-start)/tot_reads} seconds.\n")

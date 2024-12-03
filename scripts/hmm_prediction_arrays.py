@@ -10,6 +10,9 @@ from handle_msa import length_seq
 
 
 def build_matrix(input):
+    """
+    From a string of the form "1,2/3,4" returns a numpy matrix array [[1,2],[3,4]]
+    """
     matrix = []
     rows = input.split("/")
     for i in rows:
@@ -20,6 +23,9 @@ def build_matrix(input):
 
 
 def get_evidence_arrays(evidences_file):
+    """
+    Reads the evidence arrays from a tsv file and returns the ancestral names, evidence arrays, mapping starts and mapping ends
+    """
     csv.field_size_limit(sys.maxsize)
 
     read_names = []
@@ -50,6 +56,10 @@ def get_evidence_arrays(evidences_file):
 def write_prediction_arrays(
     results, read_names, mapping_starts, mapping_ends, output_predictions_path, output_coverage_path, refs_msa_path
 ):
+    """
+    Compresses and writes prediction arrays to a tsv file.
+    Creates, fills and saves coverage arrays to a npz file.
+    """
 
     coverage = np.zeros(length_seq(refs_msa_path), dtype=int)
     coverage0 = np.zeros(length_seq(refs_msa_path), dtype=int)
@@ -128,7 +138,6 @@ if __name__ == "__main__":
             ),
         )
 
-    # write prediction arrays and coverage0 and coverage1 arrays
     write_prediction_arrays(
         results,
         read_names,

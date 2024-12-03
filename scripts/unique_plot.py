@@ -24,6 +24,17 @@ def plot_coverage_dynamics(
     coverage_threshold,
     output_path,
 ):
+    """
+    plots the normalized coverage of the two phages and the recombination distribution.
+
+    parameters:
+    - timesteps: list of timesteps
+    - recombination_folder: path to the folder containing the arrays with the recombination distribution
+    - coverage_folder: path to the folder containing the coverage arrays
+    - references: name of the references
+    - coverage_threshold: coverage threshold below which the positions are masked
+    - output_path: path to the output file where the plot will be saved
+    """
     figure, subplots = plt.subplots(len(timesteps), 1, figsize=(20, 15), sharex=True, sharey=True)
 
     for timestep in timesteps:
