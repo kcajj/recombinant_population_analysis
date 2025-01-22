@@ -34,13 +34,13 @@ HMM_parameters:
       B: "0.99996"
   emission_probability:
     A:
-      0: "0.967"
-      1: "0.03"
-      2: "0.003"
+      0: "0.972"
+      1: "0.027"
+      2: "0.001"
     B:
-      0: "0.967"
-      1: "0.003"
-      2: "0.03"
+      0: "0.972"
+      1: "0.001"
+      2: "0.027"
 
 optimization_recombination_parameter:
   flag: true
