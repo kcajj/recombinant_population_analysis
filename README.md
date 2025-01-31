@@ -2,7 +2,7 @@
 
 This tool can analyse the data of directed evolution experiments of phages sequenced with Oxford Nanopore Technology. The original application of this tool is to analyze the data produced by an [Aionostat](https://edoc.unibas.ch/96360/) experiment, a machine that allows automatic experimental evolution of phages.
 
-This tool originated as part of [Valentin Druelle's PhD project](https://edoc.unibas.ch/96360/) and it was part of my [Bachelor thesis](/thesis/Thesis_Giacomo_Castagnetti.pdf). I graduated in Genomics at University of Bologna. This project started in summer 2023 during the Biozentrum research summer project, at [NeherLab](https://neherlab.org/). I graduated in July 2024, with a final score of 110/110 cum laude, along with a honourable mention.
+This tool originated as part of [Valentin Druelle's PhD project](https://edoc.unibas.ch/96360/) and it was part of my [Bachelor thesis](old/thesis/Thesis_Giacomo_Castagnetti.pdf). I graduated in Genomics at University of Bologna. This project started in summer 2023 during the Biozentrum research summer project, at [NeherLab](https://neherlab.org/). I graduated in July 2024, with a final score of 110/110 cum laude, along with a honourable mention.
 
 The pipeline follows the following schematic workflow:
 ![workfow](documentation/assets/thesis_rec_pipeline_coloured.png)
@@ -17,11 +17,13 @@ You can run the pipeline by properly setting up the [run_config.yml](/run_config
 
 The input folder should have the following structure:
 
+<pre>
 data/
     reads/
         [replicate_code]_[timestep_code].fastq.gz
         ...
     references.fasta
+</pre>
 
 Each fastq file should be named with two codes, one identifying the experimental replicate and one progressively numbering successive timestep (in case of a time series analysis).
 
