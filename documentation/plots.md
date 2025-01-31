@@ -15,8 +15,8 @@ Example:
 
 ## Unique plot
 
-![unique_plot_example](documentation/assets/unique_P1.png)
+![unique_plot_example](assets/unique_P1.png)
 
 ## hyperparameter optimization
 
-![hyperparameter_optimization_example](documentation/assets/hyperparameter_optimization.png)
+![hyperparameter_optimization_example](assets/hyperparameter_optimization.png)
