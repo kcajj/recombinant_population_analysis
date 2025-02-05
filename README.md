@@ -7,7 +7,7 @@ This tool originated as part of [Valentin Druelle's PhD project](https://edoc.un
 The pipeline follows the following schematic workflow:
 ![workfow](documentation/assets/thesis_rec_pipeline_coloured.png)
 
-The two references corresponding to the ancestral phages are combined in a hybrid reference. This reference can be used to align the reads of the recombinant population with minimap2. The obtained alignment of each read is considered the MSA of the 2 references + the recombinant read. From the MSA the evidences of the read belonging to ancestral sequence 1 or 2 are extracted and feeded to the HMM model. To have more details on the HMM model see [here](documentation/hmm.md). The inference results are summarized in a [plot](/documentation/plots.md) that gives a complete representation of the phage population composition over the course of the experiment.
+The two references corresponding to the ancestral phages are combined in a hybrid reference. This reference can be used to align the reads of the recombinant population with minimap2. The obtained alignment of each read is considered the MSA of the 2 references + the recombinant read. From the MSA the evidences of the read belonging to ancestral sequence 1 or 2 are extracted and feeded to the HMM model. With this data, the model infers the most likely origin of the read. To have more details on the HMM model see [here](documentation/hmm.md). The inference results are summarized in a [plot](/documentation/plots.md) that gives a complete representation of the phage population composition over the course of the experiment. To have a detailed description of what each script is doing see [here](documentation/scripts.md).
 
 # Configuration
 
