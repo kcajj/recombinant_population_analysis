@@ -3,8 +3,8 @@ HMM_config = config["HMM_parameters"]
 
 references = in_fld + "/references.fasta",
 reads = in_fld + "/reads/{replicate}_{timestep}.fastq.gz"
-#reads = 'data/reads/{population}_{timestep}.fastq.gz'
 
+#build MSA of between the two references
 rule msa:
     input:
         reference = references
@@ -19,6 +19,7 @@ rule msa:
             > {output.msa}
         """
 
+#build the hybrid reference from the MSA of the two references
 rule hybrid_ref:
     input:
         msa = rules.msa.output.msa
@@ -33,6 +34,7 @@ rule hybrid_ref:
             --out {output.hybrid_ref}
         """
 
+#map the ONT reads to the hybrid reference
 rule read_mapping:
     input:
         fastq = reads,
@@ -50,6 +52,7 @@ rule read_mapping:
         samtools index {output.bam}
         """
 
+#extract the evidences of similarity for each read to each of the two ancestral sequences
 rule evidence_arrays:
     input:
         bam = rules.read_mapping.output.bam,

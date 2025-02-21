@@ -16,8 +16,11 @@ def check_configfile():
 --- alignments:
 {config["alignments"]}
 
---- HMM_parameters:
+--- HMM parameters:
 {config["HMM_parameters"]}
+
+--- likelihood optimization of hyperparameter:
+{config["optimization_recombination_parameter"]}
 
 --- plots
 {config["plots"]}
@@ -37,9 +40,8 @@ check_configfile()
 pathlib.Path("log").mkdir(exist_ok=True)
 
 
-# extract pileup config options
+# extract folder structure specification
 run_config = config["run_config"]
-
 in_fld = run_config["input"].removesuffix("/")
 out_fld = run_config["output"].removesuffix("/")
 HMM = run_config["HMM"]

@@ -15,6 +15,28 @@ def read_msa(path):
 
 
 def get_evidences_distributions(msa_matrix, i_ref1=0, i_ref2=1, i_extra=2):
+    """
+    Generate a distribution of evidence types at each position in a multiple sequence alignment (MSA).
+
+    This function compares a read sequence (i_extra) with two reference sequences (i_ref1, i_ref2).
+    For each position:
+        - If all three nucleotides (read, first ref, second ref) match (and are not "-"), the evidence is 0 (no difference).
+        - If the read nucleotide differs from both references, the evidence is 1.
+        - If the read nucleotide matches the first reference but differs from the second, the evidence is 2.
+        - If the read nucleotide matches the second reference but differs from the first, the evidence is 3.
+    
+    ! Any position where one or more sequences have "-" (gap) remains 0 by default.
+
+    Parameters:
+        msa_matrix (numpy.ndarray): A 2D array representing the MSA. Each row is a sequence, and each
+            column is a position.
+        i_ref1 (int, optional): Integer indicating the position of the first reference sequence in the msa. Defaults to 0.
+        i_ref2 (int, optional): Integer indicating the position of the second reference sequence in the msa. Defaults to 1.
+        i_extra (int, optional): Integer indicating the position of the read in the msa. Defaults to 2.
+
+    Returns:
+        numpy.ndarray: A 1D array of integers, where each position indicates the evidence type (0, 1, 2, or 3).
+    """
     l = len(msa_matrix[0])
     e_distribution = np.zeros(l, dtype=int)
 
@@ -41,21 +63,26 @@ def get_evidences_distributions(msa_matrix, i_ref1=0, i_ref2=1, i_extra=2):
     return e_distribution
 
 
-def map_refcoord_msacoord(ref_path, refs_msa_path, i_ref_in_msa):
-    map = {}
-    i = 0
-    j = 0
-    ref_seq = SeqIO.read(ref_path, "fasta").seq
-    alignment = AlignIO.read(open(refs_msa_path), "fasta")
-    while i < len(ref_seq):
-        if alignment[i_ref_in_msa, j] != "-":
-            map[i] = j
-            i += 1
-        j += 1
-    return map
-
-
 def add_to_msa(msa_path, seq, mapping_start, mapping_end):
+    """
+    Add a given sequence to a specified region within an existing multiple sequence alignment (MSA).
+
+    Parameters:
+        msa_path (str): 
+            Path to the MSA file in FASTA format.
+        seq (str): 
+            The sequence to be inserted or replaced in the MSA region.
+        mapping_start (int): 
+            Start index (inclusive) of the region within the MSA to be replaced.
+        mapping_end (int): 
+            End index (exclusive) of the region within the MSA to be replaced.
+
+    Returns:
+        numpy.ndarray: 
+            A 2D array (rows representing sequences, columns representing positions) 
+            containing the updated MSA slice with the specified region replaced by the
+            provided sequence.
+    """
     alignment = AlignIO.read(open(msa_path), "fasta")
     l = alignment.get_alignment_length()
 

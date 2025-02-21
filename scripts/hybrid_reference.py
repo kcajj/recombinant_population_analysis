@@ -4,6 +4,20 @@ import random
 
 
 def create_hybrid_ref(msa_path):
+    """
+    Generate a hybrid reference sequence from an MSA.
+
+    extracts the two sequences and iterates over each position. If one of the
+    sequences has a gap at a given position, the nucleotide from the other sequence is used.
+    In cases where both sequences have valid nucleotides, one is chosen at random with 50%
+    probability.
+
+    Args:
+        msa_path (str): The filepath to the two-sequence MSA in FASTA format.
+
+    Returns:
+        str: The generated hybrid reference sequence.
+    """
 
     alignment = AlignIO.read(open(msa_path), "fasta")
     l = alignment.get_alignment_length()
